@@ -3,7 +3,18 @@
 {% block title %}Hello GameController!{% endblock %}
 
 {% block body %}
-    {% for i in log %}
-        {{ i }} <br>
-    {% endfor %}
+<h1>Combat Team vs Team</h1>
+
+<div id="battle">
+    <div class="team" id="teamA">
+        <h3>Team A</h3>
+        <div class="unit-container"></div>
+    </div>
+    <div class="team" id="teamB">
+        <h3>Team B</h3>
+        <div class="unit-container"></div>
+    </div>
+</div>
+
+<button id="nextRound">Next Round</button>
 {% endblock %}

@@ -2,32 +2,30 @@
 
 namespace App\Controller;
 
-use App\Repository\PersonnageRepository;
+
 use App\Repository\TeamRepository;
-use App\Service\OneVsOneCombatService;
+use App\Service\TeamVsTeamCombatService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 final class GameController extends AbstractController
 {
-    #[Route('/game', name: 'app_game')]
-    public function index(TeamRepository $repository, OneVsOneCombatService $combatService): Response
+    #[Route('/game/json', name: 'game_json')]
+    public function combatJson(TeamRepository $teamRepository, TeamVsTeamCombatService $combatService): JsonResponse
     {
-        $team1 = $repository->findOneBy(['id' => rand(1, 10)]);
-        $team2 = $repository->findOneBy(['id' => rand(1, 10)]);
+        $teamA = $teamRepository->find(rand(1, 10));
+        $teamB = $teamRepository->find(rand(1, 10));
 
-        foreach ($team1->getPersonnage() as $perso1) {
-            foreach ($team2->getPersonnage() as $perso2) {
-                $combatLog = $combatService->fight($perso1, $perso2);
-                // Vous pouvez stocker ou afficher le $combatLog selon vos besoins
-            }
-        }
-        
-        dd($combatLog);
+        $result = $combatService->fight($teamA, $teamB);
 
+        return new JsonResponse($result);
+    }
 
-        return $this->render('game/index.html.twig', [
-        ]);
+    #[Route('/game/ui', name: 'game_ui')]
+    public function combatUi(): Response
+    {
+        return $this->render('game/index.html.twig'); // page front
     }
 }
