@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\CharacterRepository;
+use App\Repository\PersonnageRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CharacterRepository::class)]
-class Character
+#[ORM\Entity(repositoryClass: PersonnageRepository::class)]
+class Personnage
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -27,14 +27,14 @@ class Character
     #[ORM\Column]
     private ?int $defense = null;
 
-    #[ORM\ManyToOne(inversedBy: 'characters')]
+    #[ORM\ManyToOne(inversedBy: 'personnages')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Role $role = null;
 
     /**
      * @var Collection<int, Team>
      */
-    #[ORM\ManyToMany(targetEntity: Team::class, mappedBy: 'character')]
+    #[ORM\ManyToMany(targetEntity: Team::class, mappedBy: 'personnage')]
     private Collection $teams;
 
     public function __construct()
@@ -119,7 +119,7 @@ class Character
     {
         if (!$this->teams->contains($team)) {
             $this->teams->add($team);
-            $team->addCharacter($this);
+            $team->addPersonnage($this);
         }
 
         return $this;
@@ -128,7 +128,7 @@ class Character
     public function removeTeam(Team $team): static
     {
         if ($this->teams->removeElement($team)) {
-            $team->removeCharacter($this);
+            $team->removePersonnage($this);
         }
 
         return $this;
