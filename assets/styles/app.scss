@@ -3,3 +3,58 @@
 .unit-container { margin-top:10px; }
 .unit { border:1px solid #000; padding:5px; margin:5px; text-align:center; background:#eee; transition:0.3s; }
 .unit.dead { background:#555; color:#fff; text-decoration:line-through; }
+
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(6, 60px);
+    grid-template-rows: repeat(5, 60px);
+    gap: 4px;
+    margin-bottom: 20px;
+}
+
+.cell {
+    width: 60px;
+    height: 60px;
+    border: 1px solid #333;
+    background: #fafafa;
+    cursor: pointer;
+}
+
+.cell.A { background: #cce5ff9a; }
+.cell.B { background: #ffd6d6a8; }
+
+.unit {
+    padding: 5px;
+    margin: 4px;
+    border: 1px solid #000;
+    cursor: pointer;
+}
+.unit.selected {
+    outline: 3px solid orange;
+}
+
+.unit.removed {
+    opacity: 0.5;
+    text-decoration: line-through;
+    pointer-events: none;
+}
+
+.cell.forbidden {
+    background: repeating-linear-gradient(
+        45deg,
+        #ccc,
+        #ccc 10px,
+        #eee 10px,
+        #eee 20px
+    );
+    cursor: not-allowed;
+}
+
+.cell.allowed-A {
+    background-color: #e7f0faa4;
+}
+
+.cell.allowed-B {
+    background-color: #ffebebb7;
+}

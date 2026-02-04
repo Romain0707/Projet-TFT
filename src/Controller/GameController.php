@@ -26,6 +26,34 @@ final class GameController extends AbstractController
     #[Route('/game/ui', name: 'game_ui')]
     public function combatUi(): Response
     {
-        return $this->render('game/index.html.twig'); // page front
+        return $this->render('game/index.html.twig');
+    }
+
+    #[Route('/game/placement-data', name: 'game_placement_data')]
+    public function placementData(TeamRepository $teamRepo): JsonResponse
+    {
+        $teamA = $teamRepo->find(rand(1, 10));
+        $teamB = $teamRepo->find(rand(1, 10));
+
+        return new JsonResponse([
+            'board' => [
+                'width' => 6,
+                'height' => 4
+            ],
+            'teams' => [
+                'A' => $teamA->getPersonnage()->map(fn($p) => [
+                    'id' => $p->getId(),
+                    'name' => $p->getName(),
+                    'role' => $p->getRole()->getName(),
+                    'range' => $p->getPortee()
+                ])->toArray(),
+                'B' => $teamB->getPersonnage()->map(fn($p) => [
+                    'id' => $p->getId(),
+                    'name' => $p->getName(),
+                    'role' => $p->getRole()->getName(),
+                    'range' => $p->getPortee()
+                ])->toArray()
+            ]
+        ]);
     }
 }

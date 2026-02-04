@@ -37,6 +37,9 @@ class Personnage
     #[ORM\ManyToMany(targetEntity: Team::class, mappedBy: 'personnage')]
     private Collection $teams;
 
+    #[ORM\Column]
+    private ?int $portee = null;
+
     public function __construct()
     {
         $this->teams = new ArrayCollection();
@@ -130,6 +133,18 @@ class Personnage
         if ($this->teams->removeElement($team)) {
             $team->removePersonnage($this);
         }
+
+        return $this;
+    }
+
+    public function getPortee(): ?int
+    {
+        return $this->portee;
+    }
+
+    public function setPortee(int $portee): static
+    {
+        $this->portee = $portee;
 
         return $this;
     }
