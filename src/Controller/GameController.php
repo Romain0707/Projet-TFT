@@ -2,38 +2,31 @@
 
 namespace App\Controller;
 
-
 use App\Repository\TeamRepository;
-use App\Service\TeamVsTeamCombatService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 final class GameController extends AbstractController
 {
-    #[Route('/game/json', name: 'game_json')]
-    public function combatJson(TeamRepository $teamRepository, TeamVsTeamCombatService $combatService): JsonResponse
+    /* ===================== PLACEMENT UI ===================== */
+
+    #[Route('/game/placement', name: 'game_placement_ui')]
+    public function placementUi(): Response
     {
-        $teamA = $teamRepository->find(rand(1, 10));
-        $teamB = $teamRepository->find(rand(1, 10));
-
-        $result = $combatService->fight($teamA, $teamB);
-
-        return new JsonResponse($result);
+        return $this->render('game/placement.html.twig');
     }
 
-    #[Route('/game/ui', name: 'game_ui')]
-    public function combatUi(): Response
-    {
-        return $this->render('game/index.html.twig');
-    }
+    /* ===================== PLACEMENT DATA ===================== */
 
     #[Route('/game/placement-data', name: 'game_placement_data')]
     public function placementData(TeamRepository $teamRepo): JsonResponse
     {
-        $teamA = $teamRepo->find(rand(1, 10));
-        $teamB = $teamRepo->find(rand(1, 10));
+        $teamA = $teamRepo->find(1);
+        $teamB = $teamRepo->find(2);
 
         return new JsonResponse([
             'board' => [
@@ -54,6 +47,19 @@ final class GameController extends AbstractController
                     'range' => $p->getPortee()
                 ])->toArray()
             ]
+        ]);
+    }
+
+    #[Route('/game/placement/save', name: 'game_placement_save', methods: ['POST'])]
+    public function savePlacement( Request $request, SessionInterface $session ): JsonResponse 
+    {
+        $placement = json_decode($request->getContent(), true);
+
+        $session->set('placement', $placement);
+
+        return new JsonResponse([
+            'ok' => true,
+            'redirect' => '/combat'
         ]);
     }
 }

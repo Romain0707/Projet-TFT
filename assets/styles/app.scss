@@ -58,3 +58,13 @@
 .cell.allowed-B {
     background-color: #ffebebb7;
 }
+
+#battlefield { display: inline-block; }
+.row { display: flex; }
+.cell {
+    width: 80px; height: 50px; border: 1px solid #ccc;
+    display: flex; align-items: center; justify-content: center;
+}
+.cell.A { background-color: #8fd3f4; }
+.cell.B { background-color: #f4a88f; }
+.cell.dead { background-color: #555; color: #fff; text-decoration: line-through; }
