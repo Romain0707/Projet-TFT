@@ -4,10 +4,57 @@
 
 {% block body %}
     <main>
-        <section class='banner'>
+    <div class='banner'>
+        <section class='hero'>
             <div>
-                <p>Découvrez le 3v3 comme vous ne l’avez jamais vu !</p>
+                <h1>Découvrez le 3v3 comme vous ne l’avez jamais vu !</h1>
             </div>
         </section>
+        <section class='TFP'>
+            <div>
+                <h2>TFP qu’est ce que c’est ? </h2>
+            </div>
+            <div class='explain'>
+                <div class='regle'>
+                    <p>C’est un jeu tactique où le joueur compose une équipe de trois personnages, chacun avec ses propres compétences et rôles (attaque, défense, porter, etc.). L’objectif est d’affronter une équipe adverse de trois combattants dans des combats stratégiques en temps réel .</p>
+                    <P> La victoire repose autant sur la composition de l’équipe, et la coordination entre les personnages que sur la puissance brute.</P>
+                </div>
+                <div>
+                    <img src="{{asset('img/accueil/mage.png')}}" alt="">
+                </div>
+            </div>
+        </section>
+        <section>          
+            <div class='title-actu'>    
+                <h2>Dernières actualités</h2>
+            </div>  
+            <div class='container-card'>
+                <div class='card'>
+                    <img src="{{asset('img/accueil/mage.png')}}" alt="">
+                    <div>
+                        <h3>NOUVEAU PERSONNAGE !</h3>
+                        <p>Venez decouvrir notre nouveau personnage !</p>
+                    </div>
+                    <a href="" class='btn'>Viens en voir +</a>
+                </div>
+                <div class='card'>
+                    <img src="{{asset('img/accueil/mage.png')}}" alt="">
+                    <div>
+                        <h3>NOUVEAU PERSONNAGE !</h3>
+                        <p>Venez decouvrir notre nouveau personnage !</p>
+                    </div>
+                    <a href="" class='btn'>Viens en voir +</a>
+                </div>
+                <div class='card'>
+                    <img src="{{asset('img/accueil/mage.png')}}" alt="">
+                    <div>
+                        <h3>NOUVEAU PERSONNAGE !</h3>
+                        <p>Venez decouvrir notre nouveau personnage !</p>
+                    </div>
+                    <a href="" class='btn'>Viens en voir +</a>
+                </div>
+            </div>
+        </section>
+    </div>
     </main>
 {% endblock %}

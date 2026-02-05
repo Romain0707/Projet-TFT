@@ -1,0 +1,74 @@
+.banner{
+    background: center/cover no-repeat fixed url(../../../public/img/accueil/banner.png);
+    .hero{
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+            h1{
+                color: #DAD4A6;
+                -webkit-text-stroke: 1px #686868; 
+                font-size: 70px;
+                font-family: 'medievalsharp';
+        }
+    }
+    h2{
+        font-size: 50px;
+        font-family: 'medievalsharp';
+    }
+    .TFP{
+        margin-top:100px ;
+        text-align: center;
+        .explain{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 300px;
+            .regle{
+                width: 40%;
+                p{
+                    font-size: 50px;
+                    font-family: 'jacquard24';
+                    text-align: start;
+                    color: #DAD4A6;
+                }
+            }
+            img{
+                width: 400px;
+            }
+        }
+    }
+    .title-actu{
+        text-align: center;
+    }
+    .container-card{
+        display: flex;
+        justify-content: space-around;
+        .card{
+            background-color: #686868;
+            width: 20%;
+            text-align: center;
+            padding-top:10px ;
+            font-family: 'medievalsharp';
+            img{
+                width: 150px;
+                background-color: white;
+            }
+            .btn{
+                background-color: white;
+                color: rgb(255, 255, 255);
+                padding: 8px 12px;
+                border-radius: 8px;
+                text-decoration: none;
+                display: inline-block;
+                color: black;
+                cursor: pointer;
+                transition: all 0.4s ease;
+            }
+            .btn:hover{
+                background-color: black;
+                color: white;
+            }
+        }
+    }
+}

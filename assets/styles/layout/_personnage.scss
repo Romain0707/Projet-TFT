@@ -1,0 +1,15 @@
+.banner{
+    background: center/cover no-repeat fixed url(../../../public/img/accueil/banner.png);
+    .hero{
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+            h1{
+                color: #DAD4A6;
+                -webkit-text-stroke: 1px #686868; 
+                font-size: 70px;
+                font-family: 'medievalsharp';
+        }
+    }
+}
