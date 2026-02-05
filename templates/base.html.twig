@@ -14,6 +14,19 @@
         {% endblock %}
     </head>
     <body>
+        <header>
+            <div class='container_nav'>
+                <img src="{{asset('img/logoTFP.png')}}" alt="logoTFP"> 
+                <ul class='nav-bar'>
+                    <li><a href="{{path('app_accueil')}}">Accueil</a></li>
+                    <li><a href="{{path('app_accueil')}}">Accueil</a></li>
+                    <li><a href="{{path('app_accueil')}}">Accueil</a></li>
+                </ul>
+            </div>
+        </header>
         {% block body %}{% endblock %}
+        <footer>
+
+        </footer>
     </body>
 </html>
