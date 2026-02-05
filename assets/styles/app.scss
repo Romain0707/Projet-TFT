@@ -25,11 +25,34 @@
 .cell.B { background: #ffd6d6a8; }
 
 .unit {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: center;
+    margin: 5px;
     padding: 5px;
-    margin: 4px;
-    border: 1px solid #000;
-    cursor: pointer;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
 }
+
+.unit img {
+    width: 100px;  /* largeur de chaque sprite */
+    height: 100px; /* hauteur de chaque sprite */
+    object-fit: none; /* Important si tu utilises une image sprite */
+    object-position: 0px;
+    transform: scale(3);
+}
+
+/* Animation de l'Idle (changer de frame) */
+@keyframes idleAnimation {
+    0% { object-position: 0px; }
+    100% { object-position: -600px; } /* Change selon la taille de ton sprite sheet */
+}
+
+.unit img {
+    animation: idleAnimation 1s steps(6) infinite; /* 1s = durée de 1 boucle, steps(5) = 5 frames */
+}
+
 .unit.selected {
     outline: 3px solid orange;
 }

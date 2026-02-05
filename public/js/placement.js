@@ -51,6 +51,15 @@ function renderUnits(units, team) {
         div.className = 'unit';
         div.dataset.id = unit.id;
         div.textContent = `${unit.name} (R:${unit.range})`;
+
+        // Ajout de l'image pour chaque unité
+        const img = document.createElement('img');
+        img.src = unit.image_url;  // On utilise l'URL de l'image
+        img.alt = unit.name;
+        img.className = 'unit-image'; // Tu peux ajouter une classe CSS pour les images
+
+        div.appendChild(img);  // Ajout de l'image dans l'élément
+
         div.addEventListener('click', () => selectUnit(unit, team, div));
         container.appendChild(div);
     });
@@ -62,7 +71,7 @@ function selectUnit(unit, team, el) {
     document.querySelectorAll('.unit').forEach(u => u.classList.remove('selected'));
     el.classList.add('selected');
 
-    selectedUnit = { ...unit, team };
+    selectedUnit = { ...unit, side: team }; 
 
     highlightZones(team);
 }
@@ -83,28 +92,33 @@ function highlightZones(team) {
 /* ===================== PLACEMENT ===================== */
 
 function placeUnit(cell) {
+    console.log("placeUnit called", { selectedUnit, x: cell.dataset.x, y: cell.dataset.y, classes: [...cell.classList] });
     if (!selectedUnit) return;
     if (cell.classList.contains('forbidden')) return;
     if (cell.classList.contains('occupied')) return;
 
     cell.classList.remove('allowed-A', 'allowed-B');
-    cell.classList.add('occupied', selectedUnit.team);
+    cell.classList.add('occupied', selectedUnit.side);
     cell.textContent = selectedUnit.name;
 
-    placement[`team${selectedUnit.team}`].push({
+    placement[`team${selectedUnit.side}`].push({
         id: selectedUnit.id,
-        team: selectedUnit.team,
         position: {
             x: parseInt(cell.dataset.x),
             y: parseInt(cell.dataset.y)
         }
     });
+    console.log("PUSH OK", selectedUnit.side, placement.teamA.length, placement.teamB.length, placement);
 
-    markUnitAsPlaced(selectedUnit.id, selectedUnit.team);
+    markUnitAsPlaced(selectedUnit.id, selectedUnit.side);
 
     selectedUnit = null;
     clearHighlights();
+
+    // ✅ debug utile
+    console.log("placement", placement);
 }
+
 
 function markUnitAsPlaced(id, team) {
     const container = document.getElementById(`team${team}-units`);
@@ -128,6 +142,8 @@ function clearHighlights() {
 /* ===================== SEND TO BACK ===================== */
 
 document.getElementById('startCombat').addEventListener('click', () => {
+    console.log("START CLICK", placement.teamA.length, placement.teamB.length, placement);
+    
     if (placement.teamA.length === 0 || placement.teamB.length === 0) {
         alert('Les deux équipes doivent avoir des unités placées');
         return;

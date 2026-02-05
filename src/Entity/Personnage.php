@@ -40,6 +40,9 @@ class Personnage
     #[ORM\Column]
     private ?int $portee = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image_url = null;
+
     public function __construct()
     {
         $this->teams = new ArrayCollection();
@@ -145,6 +148,18 @@ class Personnage
     public function setPortee(int $portee): static
     {
         $this->portee = $portee;
+
+        return $this;
+    }
+
+    public function getImageUrl(): ?string
+    {
+        return $this->image_url;
+    }
+
+    public function setImageUrl(?string $image_url): static
+    {
+        $this->image_url = $image_url;
 
         return $this;
     }

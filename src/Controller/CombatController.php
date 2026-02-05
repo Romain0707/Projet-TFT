@@ -13,27 +13,59 @@ use Symfony\Component\Routing\Attribute\Route;
 final class CombatController extends AbstractController
 {
     #[Route('/combat', name: 'combat_page')]
-    public function combatPage(): Response
-    {
-        return $this->render('combat/index.html.twig');
-    }
-
-    #[Route('/combat/json', name: 'combat_json')]
-    public function combatJson( SessionInterface $session, TeamRepository $teamRepo,  TeamVsTeamCombatService $combatService ): JsonResponse 
+    public function combatPage( SessionInterface $session, TeamRepository $teamRepo, TeamVsTeamCombatService $combatService ): Response 
     {
         $placement = $session->get('placement');
 
-        if (!$placement) {
-            return new JsonResponse(['error' => 'No placement'], 400);
+        if (!is_array($placement) || !isset($placement['teamA'], $placement['teamB'])) {
+            return $this->redirectToRoute('game_placement_ui');
         }
 
-        $teamA = $teamRepo->find(1);
-        $teamB = $teamRepo->find(2);
+        // ✅ récupère les teams choisies au moment du placement
+        $selected = $placement['selected_team_ids'] ?? $session->get('selected_team_ids');
+
+        if (!is_array($selected) || !isset($selected['teamA'], $selected['teamB'])) {
+            return $this->redirectToRoute('game_placement_ui');
+        }
+
+        $teamA = $teamRepo->find((int) $selected['teamA']);
+        $teamB = $teamRepo->find((int) $selected['teamB']);
+
+        if (!$teamA || !$teamB) {
+            return $this->redirectToRoute('game_placement_ui');
+        }
 
         $result = $combatService->fight($teamA, $teamB, $placement);
 
-        $result['board'] = ['width' => 6, 'height' => 4];
+        return $this->render('combat/index.html.twig', [
+            'fightJson' => $result,
+        ]);
+    }
 
+    #[Route('/combat/json', name: 'combat_json')]
+    public function combatJson( SessionInterface $session, TeamRepository $teamRepo, TeamVsTeamCombatService $combatService ): JsonResponse 
+    {
+        $placement = $session->get('placement');
+
+        if (!is_array($placement) || !isset($placement['teamA'], $placement['teamB'])) {
+            return new JsonResponse(['error' => 'No placement'], 400);
+        }
+
+        // ✅ récupère les teams sélectionnées AU MOMENT du placement
+        $selected = $placement['selected_team_ids'] ?? $session->get('selected_team_ids');
+
+        if (!is_array($selected) || !isset($selected['teamA'], $selected['teamB'])) {
+            return new JsonResponse(['error' => 'No selected teams in session'], 400);
+        }
+
+        $teamA = $teamRepo->find((int)$selected['teamA']);
+        $teamB = $teamRepo->find((int)$selected['teamB']);
+
+        if (!$teamA || !$teamB) {
+            return new JsonResponse(['error' => 'Selected team not found'], 404);
+        }
+
+        $result = $combatService->fight($teamA, $teamB, $placement);
         return new JsonResponse($result);
     }
 }
