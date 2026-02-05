@@ -91,3 +91,29 @@
 .cell.A { background-color: #8fd3f4; }
 .cell.B { background-color: #f4a88f; }
 .cell.dead { background-color: #555; color: #fff; text-decoration: line-through; }
+
+.container__character-team {
+    display: flex;
+    justify-content: space-around;
+    gap: 1rem;
+}
+
+.character-team {
+    border: 1px solid #ccc;
+    padding: 1rem;
+    width: 50px;
+    height: 50px;
+}
+
+.character-team.selected {
+    border-color: orange;
+    box-shadow: 0 0 10px orange;
+}
+
+.character-card {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}

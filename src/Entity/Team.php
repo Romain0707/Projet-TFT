@@ -30,7 +30,6 @@ class Team
 
     public function __construct()
     {
-        $this->character = new ArrayCollection();
         $this->personnage = new ArrayCollection();
     }
 
