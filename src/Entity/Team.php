@@ -18,19 +18,22 @@ class Team
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    /**
-     * @var Collection<int, Character>
-     */
-    #[ORM\ManyToMany(targetEntity: Character::class, inversedBy: 'teams')]
-    private Collection $character;
-
     #[ORM\ManyToOne(inversedBy: 'team')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user_id = null;
 
+    /**
+     * @var Collection<int, Personnage>
+     */
+    #[ORM\ManyToMany(targetEntity: Personnage::class, inversedBy: 'teams')]
+    private Collection $personnage;
+
+    #[ORM\Column]
+    private ?bool $active = null;
+
     public function __construct()
     {
-        $this->character = new ArrayCollection();
+        $this->personnage = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -50,30 +53,6 @@ class Team
         return $this;
     }
 
-    /**
-     * @return Collection<int, Character>
-     */
-    public function getCharacter(): Collection
-    {
-        return $this->character;
-    }
-
-    public function addCharacter(Character $character): static
-    {
-        if (!$this->character->contains($character)) {
-            $this->character->add($character);
-        }
-
-        return $this;
-    }
-
-    public function removeCharacter(Character $character): static
-    {
-        $this->character->removeElement($character);
-
-        return $this;
-    }
-
     public function getUserId(): ?User
     {
         return $this->user_id;
@@ -82,6 +61,42 @@ class Team
     public function setUserId(?User $user_id): static
     {
         $this->user_id = $user_id;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Personnage>
+     */
+    public function getPersonnage(): Collection
+    {
+        return $this->personnage;
+    }
+
+    public function addPersonnage(Personnage $personnage): static
+    {
+        if (!$this->personnage->contains($personnage)) {
+            $this->personnage->add($personnage);
+        }
+
+        return $this;
+    }
+
+    public function removePersonnage(Personnage $personnage): static
+    {
+        $this->personnage->removeElement($personnage);
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): static
+    {
+        $this->active = $active;
 
         return $this;
     }

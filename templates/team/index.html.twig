@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TeamController!{% endblock %}
+
+{% block body %}
+    <section id="hero">
+    <h1>Créer ton équipe et entre dans l'arène pour la gloire !</h1>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="team-container">
+                <h2>Choisissez vos combattants !</h2>
+                <input type="text" placeholder="Nom de la team" id="team-name" class="team-name">
+                <div class="container__character-team">
+                    <div class="character-team">
+                    
+                    </div>
+                    <div class="character-team">
+                    
+                    </div>
+                    <div class="character-team">
+                    
+                    </div>
+                </div>
+                <button>Sauvegarder</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="team-list">
+        <div class="filters-button">
+            <div class="filter-button" data-filter="dps">DPS</div>
+            <div class="filter-button" data-filter="tank">TANK</div>
+            <div class="filter-button" data-filter="heal">HEALER</div>
+        </div>
+        <div class="card-container">
+            {% include 'partials/hero.html.twig' %}
+        </div>
+    </section>
+
+    <script src="{{ asset('js/team-selection.js') }}"></script>
+{% endblock %}

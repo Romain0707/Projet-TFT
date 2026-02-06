@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\CharacterRepository;
+use App\Repository\PersonnageRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CharacterRepository::class)]
-class Character
+#[ORM\Entity(repositoryClass: PersonnageRepository::class)]
+class Personnage
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -27,15 +27,21 @@ class Character
     #[ORM\Column]
     private ?int $defense = null;
 
-    #[ORM\ManyToOne(inversedBy: 'characters')]
+    #[ORM\ManyToOne(inversedBy: 'personnages')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Role $role = null;
 
     /**
      * @var Collection<int, Team>
      */
-    #[ORM\ManyToMany(targetEntity: Team::class, mappedBy: 'character')]
+    #[ORM\ManyToMany(targetEntity: Team::class, mappedBy: 'personnage')]
     private Collection $teams;
+
+    #[ORM\Column]
+    private ?int $portee = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image_url = null;
 
     public function __construct()
     {
@@ -119,7 +125,7 @@ class Character
     {
         if (!$this->teams->contains($team)) {
             $this->teams->add($team);
-            $team->addCharacter($this);
+            $team->addPersonnage($this);
         }
 
         return $this;
@@ -128,8 +134,32 @@ class Character
     public function removeTeam(Team $team): static
     {
         if ($this->teams->removeElement($team)) {
-            $team->removeCharacter($this);
+            $team->removePersonnage($this);
         }
+
+        return $this;
+    }
+
+    public function getPortee(): ?int
+    {
+        return $this->portee;
+    }
+
+    public function setPortee(int $portee): static
+    {
+        $this->portee = $portee;
+
+        return $this;
+    }
+
+    public function getImageUrl(): ?string
+    {
+        return $this->image_url;
+    }
+
+    public function setImageUrl(?string $image_url): static
+    {
+        $this->image_url = $image_url;
 
         return $this;
     }

@@ -19,14 +19,16 @@ class Role
     private ?string $name = null;
 
     /**
-     * @var Collection<int, Character>
+     * @var Collection<int, Personnage>
      */
-    #[ORM\OneToMany(targetEntity: Character::class, mappedBy: 'role')]
-    private Collection $characters;
+    #[ORM\OneToMany(targetEntity: Personnage::class, mappedBy: 'role')]
+    private Collection $personnages;
+
 
     public function __construct()
     {
         $this->characters = new ArrayCollection();
+        $this->personnages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -47,29 +49,29 @@ class Role
     }
 
     /**
-     * @return Collection<int, Character>
+     * @return Collection<int, Personnage>
      */
-    public function getCharacters(): Collection
+    public function getPersonnages(): Collection
     {
-        return $this->characters;
+        return $this->personnages;
     }
 
-    public function addCharacter(Character $character): static
+    public function addPersonnage(Personnage $personnage): static
     {
-        if (!$this->characters->contains($character)) {
-            $this->characters->add($character);
-            $character->setRole($this);
+        if (!$this->personnages->contains($personnage)) {
+            $this->personnages->add($personnage);
+            $personnage->setRole($this);
         }
 
         return $this;
     }
 
-    public function removeCharacter(Character $character): static
+    public function removePersonnage(Personnage $personnage): static
     {
-        if ($this->characters->removeElement($character)) {
+        if ($this->personnages->removeElement($personnage)) {
             // set the owning side to null (unless already changed)
-            if ($character->getRole() === $this) {
-                $character->setRole(null);
+            if ($personnage->getRole() === $this) {
+                $personnage->setRole(null);
             }
         }
 

@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h2>Placement des unités</h2>
+
+<div id="board"></div>
+
+<h3>Team A</h3>
+<div id="teamA-units"></div>
+
+<h3>Team B</h3>
+<div id="teamB-units"></div>
+
+<button id="startCombat">Lancer le combat</button>
+
+<script src="{{ asset('js/placement.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Combat{% endblock %}
+
+{% block body %}
+<div id="controls" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+  <button id="btnPlay">Play</button>
+  <button id="btnPause">Pause</button>
+  <button id="btnStep">Step</button>
+  <button id="btnReset">Reset</button>
+
+  <label style="margin-left:10px;">
+    Vitesse:
+    <select id="speed">
+      <option value="0.5">x0.5</option>
+      <option value="1" selected>x1</option>
+      <option value="2">x2</option>
+      <option value="4">x4</option>
+    </select>
+  </label>
+
+  <div id="hud" style="margin-left:auto; font-family:Arial; opacity:0.85;"></div>
+</div>
+
+<div style="display:flex; justify-content:center; align-items:center; height:100vh; width:100%; background-color:#eee;">
+  <canvas id="fight" width="900" height="520" style="border:1px solid #333;  "></canvas>
+</div>
+{# <script src="{{ asset('js/arena-loaders.js') }}"></script> #}
+<script src="{{ asset('js/fight-canvas.js') }}"></script>
+<script> 
+  (async () => {
+    const res = await fetch('{{ path('combat_json') }}');
+    const data = await res.json();
+    if (!res.ok) { console.error(data); return; }
+    startFight(data); // fourni par fight-canvas.js
+  })();
+</script> 
+{% endblock %}

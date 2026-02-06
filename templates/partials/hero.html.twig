@@ -1,0 +1,10 @@
+{% for hero in personnage %}
+<div class="character-card" data-characterId="{{ hero.id }}">
+    <h3 class="character-name">{{ hero.name }}</h3>
+    <p>Rôle : {{ hero.role.name }}</p>
+    <p>Points de vie : {{ hero.health }}</p>
+    <p>Dégâts : {{ hero.power }}</p>
+    <p>Defense : {{ hero.defense }}</p>
+    <p>Portée : {{ hero.portee }}</p>
+</div>
+{% endfor %}
