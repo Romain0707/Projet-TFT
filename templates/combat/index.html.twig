@@ -22,15 +22,17 @@
   <div id="hud" style="margin-left:auto; font-family:Arial; opacity:0.85;"></div>
 </div>
 
-<canvas id="fight" width="900" height="520" style="border:1px solid #333"></canvas>
-
+<div style="display:flex; justify-content:center; align-items:center; height:100vh; width:100%; background-color:#eee;">
+  <canvas id="fight" width="900" height="520" style="border:1px solid #333;  "></canvas>
+</div>
+{# <script src="{{ asset('js/arena-loaders.js') }}"></script> #}
 <script src="{{ asset('js/fight-canvas.js') }}"></script>
-<script>
+<script> 
   (async () => {
     const res = await fetch('{{ path('combat_json') }}');
     const data = await res.json();
     if (!res.ok) { console.error(data); return; }
     startFight(data); // fourni par fight-canvas.js
   })();
-</script>
+</script> 
 {% endblock %}

@@ -1,10 +1,6 @@
 (() => {
   window.startFight = function startFight(data) {
     const canvas = document.getElementById("fight");
-    if (!canvas) {
-      console.error("Canvas #fight introuvable");
-      return;
-    }
     const ctx = canvas.getContext("2d");
 
     // UI controls (si présents)
@@ -79,7 +75,7 @@
     // Approx taille de cellule (utile pour scale unit)
     function cellSizeApprox(x, y) {
       const { p00, p10, p01 } = cellQuad(x, y);
-      const w = Math.hypot(p10.x - p00.x, p10.y - p00.y);
+      const w = Math.hypot(p10.x - p00.x, p10.y - p00.y);      
       const h = Math.hypot(p01.x - p00.x, p01.y - p00.y);
       return { w, h };
     }
@@ -104,11 +100,6 @@
       ctx.lineTo(p11.x, p11.y);
       ctx.lineTo(p01.x, p01.y);
       ctx.closePath();
-
-    // damier optionnel 
-    //   const isDark = (x + y) % 2 === 0;
-    //   ctx.fillStyle = isDark ? "rgba(0,0,0,0.35)" : "rgba(255,255,255,0.06)";
-    //   ctx.fill();
 
       ctx.strokeStyle = "rgb(255, 0, 0)";
       ctx.stroke();
@@ -171,12 +162,6 @@
       const s = Math.max(0.6, Math.min(1.25, (w / 120)));
       const size = 26 * s;
 
-      // shadow
-      ctx.beginPath();
-      ctx.ellipse(cx, cy + 10 * s, 16 * s, 6 * s, 0, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(0,0,0,0.25)";
-      ctx.fill();
-
       // body (carré)
       ctx.beginPath();
       ctx.rect(cx - size / 2, cy - size, size, size);
@@ -212,7 +197,7 @@
     // ============================================================
     const timeline = [];
     for (const round of (data.rounds ?? [])) {
-      for (const a of (round.actions ?? [])) {
+      for (const a of Object.values(round.actions ?? {})) {
         timeline.push({ ...a, round: round.round });
       }
     }
@@ -222,7 +207,7 @@
     // ============================================================
     const popTexts = []; // {x,y,text,life}
 
-    function addPopDamage(unitId, dmg) {
+    function addPopText(unitId, text, isHeal = false) {
       const u = getUnitById(unitId);
       const { cx, cy } = cellCenter(u.x, u.y);
       const { w } = cellSizeApprox(u.x, u.y);
@@ -231,8 +216,9 @@
       popTexts.push({
         x: cx,
         y: cy - 26 * s,
-        text: `-${dmg}`,
+        text: text,
         life: 1.0,
+        isHeal: isHeal,  // Utilise un indicateur pour les soins
       });
     }
 
@@ -301,7 +287,7 @@
           target.y = a.target_position.y;
         }
 
-        addPopDamage(target.id, a.damage);
+        addPopText(target.id, a.damage);  // Pop-up pour les dégâts
 
         target.hp = a.target_hp;
         if (a.dead) {
@@ -309,6 +295,20 @@
           target.deadFading = true;
           setTimeout(() => { target.deadFading = false; }, 600);
         }
+      }
+
+      if (a.type === "heal") {
+        const healer = getUnitById(a.healer_id);
+        const target = getUnitById(a.target_id);
+
+        healer.flash = 1.0;  // Flash pour le soigneur aussi
+        target.flash = 1.0;  // Flash pour la cible
+
+        // Mettre à jour les points de vie
+        target.hp = a.target_hp;
+        
+        // Affichage du soin en pop-up
+        addPopText(target.id, `+${a.healing}`, true);
       }
     }
 
@@ -423,12 +423,15 @@
 
       for (const u of list) drawUnit(u);
 
-      // pop texts
+      // pop texts : afficher les soins et les dégâts
       ctx.font = "16px Arial";
       ctx.textAlign = "center";
       for (const p of popTexts) {
         ctx.globalAlpha = Math.max(0, p.life);
-        ctx.fillStyle = "#fff";
+
+        // Si c'est un soin, colorier en vert, sinon rouge pour les dégâts
+        ctx.fillStyle = p.isHeal ? "rgba(0,255,0,0.9)" : "#fff";
+
         ctx.fillText(p.text, p.x, p.y);
         ctx.globalAlpha = 1;
       }
@@ -440,6 +443,7 @@
       const footer = playing ? `▶ x${speed}` : "⏸ pause";
       ctx.fillText(footer, 12, canvas.height - 14);
     }
+
 
     function loop(now) {
       if (!lastNow) lastNow = now;

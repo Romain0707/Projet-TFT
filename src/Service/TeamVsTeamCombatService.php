@@ -17,7 +17,6 @@ class TeamVsTeamCombatService
         $fightersA = $this->initFighters($teamA, 'A', $placement['teamA'] ?? []);
         $fightersB = $this->initFighters($teamB, 'B', $placement['teamB'] ?? []);
 
-        // ✅ validation claire (sinon bugs)
         if (count($fightersA) === 0 || count($fightersB) === 0) {
             return [
                 'board' => [
@@ -35,7 +34,6 @@ class TeamVsTeamCombatService
             ];
         }
 
-        // ✅ snapshot initial (si tu l’utilises pour le canvas)
         $initialUnits = array_merge(
             $this->exportUnits($fightersA),
             $this->exportUnits($fightersB)
@@ -57,7 +55,6 @@ class TeamVsTeamCombatService
             $rounds[] = $roundData;
 
             $round++;
-            // (optionnel) safety anti-boucle infinie si tu veux
             if ($round > 200) break;
         }
 
@@ -81,7 +78,6 @@ class TeamVsTeamCombatService
 
     private function initFighters(Team $team, string $side, array $placements): array
     {
-        // map id -> position
         $posById = [];
         foreach ($placements as $p) {
             if (!isset($p['id'], $p['position']['x'], $p['position']['y'])) continue;
@@ -100,20 +96,26 @@ class TeamVsTeamCombatService
                 continue;
             }
 
+            $isHealer = $perso->getRole()->getId() === 3;
+
             $fighters[] = [
                 'id' => $id,
                 'name' => $perso->getName(),
                 'hp' => (int)$perso->getHealth(),
+                'max_hp' => (int)$perso->getHealth(),
                 'attack' => (int)$perso->getPower(),
                 'range' => (int)$perso->getPortee(),
+                'defense' => (int)$perso->getDefense(),
                 'move' => 1,
                 'position' => $posById[$id],
                 'team' => $side,
+                'is_healer' => $isHealer,
             ];
         }
 
         return $fighters;
     }
+
 
     private function exportUnits(array $fighters): array
     {
@@ -129,13 +131,17 @@ class TeamVsTeamCombatService
         ], $fighters);
     }
 
-    private function turn( array &$attackers, string $attackerTeam, array &$defenders, string $defenderTeam, array &$actions ): void 
+    private function turn(array &$attackers, string $attackerTeam, array &$defenders, string $defenderTeam, array &$actions): void
     {
-        // ✅ état des cases occupées au début du tour
         $occupied = $this->buildOccupied($attackers, $defenders);
 
         foreach ($attackers as &$attacker) {
             if ($attacker['hp'] <= 0) continue;
+
+            if (isset($attacker['is_healer']) && $attacker['is_healer'] === true) {
+                $this->healAlly($attacker, $attackerTeam, $attackers, $attackers, $actions);
+                continue; 
+            }
 
             $targetKey = $this->getClosestTarget($attacker, $defenders);
             if ($targetKey === null) return;
@@ -164,7 +170,8 @@ class TeamVsTeamCombatService
             }
 
             if ($distance <= $attacker['range']) {
-                $target['hp'] -= $attacker['attack'];
+                $damage = max(0, $attacker['attack'] - $target['defense']);
+                $target['hp'] -= $damage;
 
                 $actions[] = [
                     'type' => 'attack',
@@ -176,14 +183,13 @@ class TeamVsTeamCombatService
                     'target' => (string)$target['name'],
                     'target_team' => $defenderTeam,
                     'target_position' => $target['position'],
-                    'damage' => (int)$attacker['attack'],
+                    'damage' => (int)$damage,
                     'target_hp' => max(0, (int)$target['hp']),
                     'dead' => $target['hp'] <= 0
                 ];
             }
         }
     }
-
 
     private function getClosestTarget(array $attacker, array $defenders): ?int
     {
@@ -195,7 +201,7 @@ class TeamVsTeamCombatService
 
             $distance = $this->distance($attacker['position'], $defender['position']);
 
-            if ($distance < $minDistance) {
+            if ($distance <= $minDistance) {
                 $minDistance = $distance;
                 $closestKey = $key;
             }
@@ -279,5 +285,80 @@ class TeamVsTeamCombatService
             if ((int)$f['hp'] > 0) return false;
         }
         return true;
+    }
+
+    private function healAlly(array &$healer, string $healerTeam, array &$fightersA, array &$fightersB, array &$actions): void
+    {
+        // Trouver un allié à soigner dans l'équipe du soigneur
+        $ally = $this->findAllyToHeal($healer, $healerTeam, $fightersA, $fightersB);
+
+        if ($ally === null) return; // Aucun allié valide à soigner
+
+        // Calculer la distance entre le soigneur et l'allié
+        $distance = $this->distance($healer['position'], $ally['position']);
+
+        // Si l'allié est hors de portée, on déplace le soigneur
+        if ($distance > $healer['range']) {
+            // Déplacer le soigneur vers l'allié pour être à portée
+            $this->moveTowards($healer, $ally['position'], $actions);
+
+            // Après le mouvement, vérifier si le soigneur est maintenant à portée
+            $distance = $this->distance($healer['position'], $ally['position']);
+            if ($distance > $healer['range']) {
+                // Si le soigneur n'a toujours pas atteint la portée, on arrête le soin pour ce tour
+                return;
+            }
+        }
+
+        // Si le soigneur est à portée, appliquer le soin
+        $healingAmount = $healer['attack'];
+
+        // Application du soin sans dépasser la santé maximale
+        $ally['hp'] = min($ally['hp'] + $healingAmount, $ally['max_hp']);
+
+        // Enregistrer l'action de soin
+        $actions[] = [
+            'type' => 'heal',
+            'healer_id' => (int)$healer['id'],
+            'healer' => (string)$healer['name'],
+            'healer_team' => $healerTeam,
+            'healer_position' => $healer['position'],
+            'target_id' => (int)$ally['id'],
+            'target' => (string)$ally['name'],
+            'target_team' => $healerTeam,
+            'target_position' => $ally['position'],
+            'healing' => (int)$healingAmount,
+            'target_hp' => (int)$ally['hp']
+        ];
+    }
+
+
+    private function findAllyToHeal(array $healer, string $healerTeam, array &$fightersA, array &$fightersB): ?array
+    {
+        // Sélectionner les alliés en fonction de l'équipe du soigneur
+        $allies = ($healerTeam === 'A') ? $fightersA : $fightersB;
+
+        $minHpAlly = null;
+
+        foreach ($allies as $ally) {
+            // Ignore le soigneur lui-même
+            if ($ally['id'] === $healer['id']) continue;
+
+            // Ignore les alliés morts
+            if ($ally['hp'] <= 0) continue;
+
+            // Calculer la distance entre le soigneur et l'allié
+            $distance = $this->distance($healer['position'], $ally['position']);
+
+            // Vérifier si l'allié est dans la portée du soigneur
+            if ($distance > $healer['range']) continue;  // Si l'allié est hors de portée, on passe
+
+            // Sélectionner l'allié avec le moins de points de vie
+            if ($minHpAlly === null || $ally['hp'] < $minHpAlly['hp']) {
+                $minHpAlly = $ally;
+            }
+        }
+
+        return $minHpAlly; // Retourner l'allié à soigner, ou null si aucun allié n'est à portée
     }
 }

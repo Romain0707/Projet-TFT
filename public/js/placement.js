@@ -50,7 +50,7 @@ function renderUnits(units, team) {
         const div = document.createElement('div');
         div.className = 'unit';
         div.dataset.id = unit.id;
-        div.textContent = `${unit.name} (R:${unit.range})`;
+        div.textContent = `${unit.name} ${unit.role} (Portée:${unit.range})`;
 
         // Ajout de l'image pour chaque unité
         const img = document.createElement('img');

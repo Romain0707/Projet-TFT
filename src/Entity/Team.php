@@ -28,6 +28,9 @@ class Team
     #[ORM\ManyToMany(targetEntity: Personnage::class, inversedBy: 'teams')]
     private Collection $personnage;
 
+    #[ORM\Column]
+    private ?bool $active = null;
+
     public function __construct()
     {
         $this->personnage = new ArrayCollection();
@@ -82,6 +85,18 @@ class Team
     public function removePersonnage(Personnage $personnage): static
     {
         $this->personnage->removeElement($personnage);
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): static
+    {
+        $this->active = $active;
 
         return $this;
     }
