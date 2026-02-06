@@ -6,12 +6,8 @@ use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-<<<<<<< HEAD
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-=======
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
->>>>>>> main
 
 class RegisterFormType extends AbstractType
 {
@@ -19,7 +15,6 @@ class RegisterFormType extends AbstractType
     {
         $builder
             ->add('username')
-<<<<<<< HEAD
             ->add('password')
             ->add('username', TextType::class, [
                 'attr' => [
@@ -36,13 +31,6 @@ class RegisterFormType extends AbstractType
                 'label' => false
             ])
             ;
-=======
-            ->add('password', PasswordType::class)
-            ->add('submit', SubmitType::class, [
-                'label' => 'S\'inscrire'
-            ])
-        ;
->>>>>>> main
     }
 
     public function configureOptions(OptionsResolver $resolver): void
