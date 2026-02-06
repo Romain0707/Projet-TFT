@@ -19,7 +19,9 @@
         gap: 100px;
         justify-content: center;
         .card_personnage{
-            width: 20%;
+            max-width: 20%;
+            margin-bottom: 70px;
+            transition: all 0.4s ease;
             .name_perso{
                 display: flex;
                 align-items: center;
@@ -40,7 +42,8 @@
                 .stats_perso{
                     display: flex;
                     img{
-                        width: 55px;
+                        width: 45px;
+                        object-fit: cover;
                     }
                 }
             }
@@ -51,10 +54,23 @@
                 background-repeat: no-repeat;
                 display: flex;
                 justify-content: center;
+                max-width: 100%;
                 img{
-                    width: 120px;
+                    width: 30%;
+                }
+                .tank{
+                    width: 38%;
+                }
+                .archer{
+                    width: 34%;
+                }
+                .longSword{
+                    width: 41%;
                 }
             }
         }
     }
+}
+.card_personnage:hover{
+    box-shadow: 0px 9px 10px #DAD4A6;
 }
