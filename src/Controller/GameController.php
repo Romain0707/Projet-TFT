@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Repository\TeamRepository;
-use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,7 +10,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 final class GameController extends AbstractController
 {
@@ -26,7 +24,7 @@ final class GameController extends AbstractController
     public function placementData(TeamRepository $teamRepo, SessionInterface $session, Security $user): JsonResponse
     {
         $teamA = $teamRepo->findOneBy(['user_id' => $user->getId(), 'active' => true]);
-        $teamB = $teamRepo->createQueryBuilder('t')->where('t.user_id != :userId')->andWhere('t.active = true')->setParameter('userId', $user->getId())->orderBy('RAND()')->getQuery()->getOneOrNullResult();
+        $teamB = $teamRepo->createQueryBuilder('t')->where('t.user_id != :userId')->andWhere('t.active = true')->setParameter('userId', $user->getId())->getQuery()->getOneOrNullResult();
 
         $session->set('selected_team_ids', [
             'teamA' => $teamA?->getId(),
