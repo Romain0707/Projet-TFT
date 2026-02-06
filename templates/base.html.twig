@@ -13,7 +13,15 @@
                 <ul class='nav-bar'>
                     <li><a href="{{path('app_accueil')}}">Accueil</a></li>
                     <li><a href="{{path('app_personnage')}}">Personnage</a></li>
-                    <li><a href="{{path('login')}}">Connexion</a></li>
+                    {% if is_granted('ROLE_USER')%}
+                    <li><a href="{{path('profil')}}">Profil</a></li>
+                    {% endif %}
+                    {% if is_granted('ROLE_USER') == false %}
+                        <li><a href="{{path('login')}}">Connexion</a></li>
+                    {% endif %}
+                    {% if is_granted('ROLE_USER') %}
+                        <li><a href="{{path('logout')}}">Deconnexion</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </header>

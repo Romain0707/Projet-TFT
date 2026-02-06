@@ -170,7 +170,7 @@ class TeamVsTeamCombatService
             }
 
             if ($distance <= $attacker['range']) {
-                $damage = max(0, $attacker['attack'] - $target['defense']);
+                $damage = max(0, $attacker['attack'] - ($target['defense'] * 0.1));
                 $target['hp'] -= $damage;
 
                 $actions[] = [

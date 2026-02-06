@@ -1,0 +1,36 @@
+{% for teams in team %}
+    <div class="team-card">
+        <div class="team-heroes-container">
+            {% for personnage in teams.personnage %}
+                <div class="team-heroes">
+                    <img 
+                        src="{{ asset('img/personnage/archer.png') }}" 
+                        alt="Avatar"
+                        class="avatar"
+                    >
+
+                    <p>{{ personnage.name }}</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <h3 class="team-name">{{ teams.name }}</h3>
+        {% if app.user.id == teams.userId.id %}
+            <div class="team-option">
+                {% if teams.active == true %}
+                    <div class="active">Active</div>
+                {% else %}
+                    <div class="activate" data-filter="activate" data-team-id="{{ teams.id }}">Rendre active</div>
+                {% endif %}
+
+                <form method="POST" action="{{ path('team_delete', {'id': teams.id}) }}">
+                    <input type="hidden" name="_method" value="delete">
+                    <input type="hidden" name="_token" value="{{csrf_token('SUP' ~ teams.id)}}">
+                    <input type="submit" id="delete" value="Supprimer">
+                </form>
+            </div>
+        {% endif %}
+    </div>
+{% else %}
+    <p>Vous n’avez pas encore de teams.</p>
+{% endfor %}
