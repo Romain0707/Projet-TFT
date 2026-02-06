@@ -1,0 +1,17 @@
+.banner_register{
+    background: center/cover no-repeat fixed url(../../../public/img/login/bg_login.png);
+    margin: 0;
+    .container{
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+        .form-input{
+                height: 40px;
+                width: 500px;
+                border-radius: 10px;
+                background-color:#DAD4A6;
+            }
+    }
+}

@@ -19,6 +19,7 @@
         gap: 100px;
         justify-content: center;
         .card_personnage{
+            box-shadow: 0px 5px black, 0px -5px black, 5px 0px black, -5px 0px black, 0px 10px #00000038, 5px 5px #00000038, -5px 5px #00000038, inset 0px 5px #ffffff36 ;
             max-width: 20%;
             margin-bottom: 70px;
             transition: all 0.4s ease;

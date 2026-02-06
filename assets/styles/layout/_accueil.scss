@@ -15,10 +15,18 @@
     h2{
         font-size: 50px;
         font-family: 'medievalsharp';
+        color:white;
+        
     }
     .TFP{
         margin-top:100px ;
         text-align: center;
+        background-image: url(../../../public/img/bgTFP.jpg);
+        background-size: cover;        
+        background-repeat: no-repeat;  
+        min-height: 100vh;
+        position: relative;  
+        padding-top: 40px;
         .explain{
             display: flex;
             justify-content: center;
@@ -43,33 +51,37 @@
     }
     .container-card{
         display: flex;
-        justify-content: space-around;
+        justify-content: space-evenly;
+        padding: 30px;        
         .card{
-            background-color: #686868;
-            width: 20%;
+            background-image: url(../../../public/img/personnage/bg_parchemin.jpg);
+            background-size: contain;        
+            background-repeat: no-repeat;  
+            background-position: center;
             text-align: center;
             padding-top:10px ;
             font-family: 'medievalsharp';
             margin-bottom: 40px;
             padding-bottom: 40px;
+            
             img{
                 width: 150px;
-                background-color: white;
             }
             .btn{
-                background-color: white;
-                padding: 8px 12px;
-                border-radius: 8px;
-                text-decoration: none;
-                display: inline-block;
                 color: black;
-                cursor: pointer;
-                transition: all 0.4s ease;
+                background-color: #686868;
+                padding: 8px 20px 8px 20px;
+                margin: 10px;
+                font-size: 14px;
+                font-family: 'medievalsharp';
+                box-shadow: 0px 5px black, 0px -5px black, 5px 0px black, -5px 0px black, 0px 10px #00000038, 5px 5px #00000038, -5px 5px #00000038, inset 0px 5px #ffffff36 ;
+                text-decoration: none;
             }
-            .btn:hover{
-                background-color: black;
-                color: white;
+            .btn:active {
+                transform: translateY(5px);
+                box-shadow: 0px 5px black, 0px -5px black, 5px 0px black, -5px 0px black,inset 0px 5px #00000038;
             }
+            
         }
     }
 }
