@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Team;
 use App\Repository\PersonnageRepository;
+use App\Repository\TeamRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,17 +45,20 @@ final class TeamController extends AbstractController
     }
 
     #[Route('/team/save', name: 'save_team', methods: ['POST'])]
-    public function save(Request $request, PersonnageRepository $personnageRepository, EntityManagerInterface $entityManager, UserInterface $user): JsonResponse
+    public function save(Request $request, PersonnageRepository $personnageRepository, TeamRepository $teamRepository , EntityManagerInterface $entityManager, UserInterface $user): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         $teamName = $data['name'];
         $characterIds = $data['characters'];
 
         $characters = $personnageRepository->findBy(['id' => $characterIds]);
+        $activeteam = $teamRepository->findOneBy(['user_id' => $user, 'active' => true]);
+        $activeteam?->setActive(false);
 
         $team = new Team();
         $team->setName($teamName);
         $team->setUserId($user);
+        $team->setActive(true);
 
         foreach ($characters as $character) {
             $team->addPersonnage($character);
