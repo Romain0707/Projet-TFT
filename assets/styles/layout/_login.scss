@@ -1,0 +1,54 @@
+.banner_login{
+    background: center/cover no-repeat fixed url(../../../public/img/login/bg_login.png);
+    margin: 0;
+    .login{
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+        h1{
+            text-align: center;
+            margin: 0%;
+            color: #DAD4A6;
+            -webkit-text-stroke: 1px #686868; 
+            font-size: 70px;
+            font-family: 'medievalsharp';
+        }
+        .form_style{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+                .btn_login{
+                    background-color: white;
+                    padding: 8px 12px;
+                    border-radius: 8px;
+                    text-decoration: none;
+                    display: inline-block;
+                    color: black;
+                    cursor: pointer;
+                    transition: all 0.4s ease;
+                 }
+                 .btn_login:hover{
+                    background-color: black;
+                    color: white;
+                    font-family: 'medievalsharp';
+                }
+                .inscription_btn{
+                    margin-bottom: 100px;
+                    a{
+                        color: white;
+                        font-size: 20px;
+                    }
+                    
+                }
+            .form-control{
+                width: 500px;
+                height: 40px;
+                border-radius: 10px;
+                background-color:#DAD4A6;
+                
+            }
+    }
+}

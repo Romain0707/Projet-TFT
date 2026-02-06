@@ -1,0 +1,114 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello PersonnageController!{% endblock %}
+
+{% block body %}
+    <div class='banner_personnage'>
+        <section class='personnage'>
+            <div>
+                <h1>Voici les personages qui vous accompagnerons dans l’aventure !</h1>
+            </div>
+        </section>
+        <section>
+            <div class='container_card_personnage'>
+                <div class='card_personnage'>
+                    <div class='bg_perso'>
+                        <img src="{{asset('img/accueil/mage.png')}}" alt="mage">
+                    </div>
+                    <div class='stats'>
+                        <div>
+                            <h4>Mido</h4>
+                        </div>
+                        <div class='name_perso'>
+                            <img class='mage' src="{{asset('img/personnage/healer_logo.png')}}" alt="">
+                            <p>Healer</p>
+                        </div>
+                        <div class='stats_perso'>
+                            <img src="{{asset('img/personnage/heart.png')}}" alt="heart">
+                            <p>1</p>
+                            <img src="{{asset('img/personnage/sword.png')}}" alt="sword">
+                            <p>1</p>
+                            <img src="{{asset('img/personnage/armor.png')}}" alt="armor">
+                            <p>1</p>
+                            <img src="{{asset('img/personnage/arc.png')}}" alt="arc">
+                            <p>1</p>
+                        </div>
+                    </div>
+                </div>
+                <div class='card_personnage'>
+                    <div class='bg_perso'>
+                        <img class='tank' src="{{asset('img/personnage/warrior.png')}}" alt="mage">
+                    </div>
+                    <div class='stats'>
+                        <div>
+                            <h4>Vincent</h4>
+                        </div>
+                        <div class='name_perso'>
+                            <img src="{{asset('img/personnage/logoTank.png')}}" alt="">
+                            <p>Tank</p>
+                        </div>
+                        <div class='stats_perso'>
+                            <img src="{{asset('img/personnage/heart.png')}}" alt="heart">
+                            <p>1</p>
+                            <img src="{{asset('img/personnage/sword.png')}}" alt="sword">
+                            <p>1</p>
+                            <img src="{{asset('img/personnage/armor.png')}}" alt="armor">
+                            <p>1</p>
+                            <img src="{{asset('img/personnage/arc.png')}}" alt="arc">
+                            <p>1</p>
+                        </div>
+                    </div>
+                </div>
+                <div class='card_personnage'>
+                    <div class='bg_perso'>
+                        <img class='archer' src="{{asset('img/personnage/archer.png')}}" alt="mage">
+                    </div>
+                    <div class='stats'>
+                        <div>
+                            <h4>Sosui</h4>
+                        </div>
+                        <div class='name_perso'>
+                            <img src="{{asset('img/personnage/logoSword.png')}}" alt="">
+                            <p>Dpt</p>
+                        </div>
+                        <div class='stats_perso'>
+                            <img src="{{asset('img/personnage/heart.png')}}" alt="heart">
+                            <p>1</p>
+                            <img src="{{asset('img/personnage/sword.png')}}" alt="sword">
+                            <p>1</p>
+                            <img src="{{asset('img/personnage/armor.png')}}" alt="armor">
+                            <p>1</p>
+                            <img src="{{asset('img/personnage/arc.png')}}" alt="arc">
+                            <p>1</p>
+                        </div>
+                    </div>
+                </div>
+                <div class='card_personnage'>
+                    <div class='bg_perso'>
+                        <img class='longSword' src="{{asset('img/personnage/longSword.png')}}" alt="mage">
+                    </div>
+                    <div class='stats'>
+                        <div>
+                            <h4>Mévit</h4>
+                        </div>
+                        <div class='name_perso'>
+                            <img src="{{asset('img/personnage/logoSword.png')}}" alt="">
+                            <p>Dpt</p>
+                        </div>
+                        <div class='stats_perso'>
+                            <img src="{{asset('img/personnage/heart.png')}}" alt="heart">
+                            <p>1</p>
+                            <img src="{{asset('img/personnage/sword.png')}}" alt="sword">
+                            <p>1</p>
+                            <img src="{{asset('img/personnage/armor.png')}}" alt="armor">
+                            <p>1</p>
+                            <img src="{{asset('img/personnage/arc.png')}}" alt="arc">
+                            <p>1</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+{% endblock %}

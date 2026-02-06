@@ -7,7 +7,28 @@
         
     </head>
     <body>
+        <header>
+            <div class='container_nav'>
+                <img src="{{asset('img/header/logoTFP.png')}}" alt="logoTFP"> 
+                <ul class='nav-bar'>
+                    <li><a href="{{path('app_accueil')}}">Accueil</a></li>
+                    <li><a href="{{path('app_personnage')}}">Personnage</a></li>
+                    <li><a href="{{path('login')}}">Connexion</a></li>
+                </ul>
+            </div>
+        </header>
         {% block body %}{% endblock %}
+        <footer>
+            <div class='container_footer'>
+                <div>
+                    <p>TFP</p>
+                    <p>© Copyright , Romain,Leo et Mylan</p>
+                </div>
+                <div>
+                    <img src="{{asset('img/header/logoTFP.png')}}" alt="logoTFP">
+                </div>
+            </div>
+        </footer>
     </body>
 
     {{ encore_entry_script_tags('app') }}

@@ -1,1 +1,18 @@
 @use "romain"; 
+/*BASE*/
+@use 'base/fonts';
+@use 'base/bases';
+
+/*abstracts*/
+
+/*components*/
+
+/*layout*/
+@use 'layout/header';
+@use 'layout/accueil';
+@use 'layout/personnage.scss';
+@use 'layout/footer.scss';
+@use 'layout/login.scss';
+
+
+
