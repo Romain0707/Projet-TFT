@@ -1,3 +1,11 @@
+
+.container_card_personnage{
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+}
+
 .card_personnage {
     position: relative;
     width: 358px;
@@ -28,7 +36,7 @@
     .card_personnage_img {
         width: 100%;
         height: 120px;
-        
+
         img {
             width: 100%;
             height: 100%;
