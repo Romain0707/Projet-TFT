@@ -8,10 +8,12 @@
         align-items: center;
         
         .form-input{
-                height: 40px;
-                width: 500px;
-                border-radius: 10px;
-                background-color:#DAD4A6;
-            }
+            height: 40px;
+            width: 500px;
+            border-radius: 10px;
+            background-color:#DAD4A6;
+            display: flex;
+
+        }
     }
 }
