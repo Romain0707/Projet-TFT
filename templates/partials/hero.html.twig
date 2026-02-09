@@ -1,5 +1,5 @@
 {% for hero in personnage %}
-<div class='card_personnage'>
+<div class='card_personnage' data-characterId="{{ hero.id }}">
     <div class="card_personnage_name">{{ hero.name }}</div>
     <div class="card_personnage_role {{hero.role.name}}">{{hero.role.name}}</div>
     <div class='card_personnage_img'>

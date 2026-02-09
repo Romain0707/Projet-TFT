@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const filterBtn = document.querySelectorAll('.filter-button');
-    const resultContainer = document.querySelector('.card-container');
+    const resultContainer = document.querySelector('.container_card_personnage');
     const characterTeams = document.querySelectorAll('.character-team');
     const saveButton = document.querySelector('button'); 
     let selectedTeamSlot = null;
@@ -34,11 +34,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     resultContainer.addEventListener('click', (event) => {
         let target = event.target;
-        while (target && !target.classList.contains('character-card')) {
+        while (target && !target.classList.contains('card_personnage')) {
             target = target.parentElement;
         }
 
-        if (target && target.classList.contains('character-card') && selectedTeamSlot) {
+        if (target && target.classList.contains('card_personnage') && selectedTeamSlot) {
             // Si une équipe est déjà sélectionnée, on met à jour son contenu avec le nouveau personnage
             const characterId = target.dataset.characterid;
 
