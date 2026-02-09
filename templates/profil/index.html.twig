@@ -7,19 +7,22 @@
     <section id="profil">
         <div class="container">
             <div class="avatar-container">
-                <div id="avatar">
+                <div id="avatar-frame">
                     <div class="avatar-img">
                         <img src="" alt="">
                     </div>
                     <div class="avatar-border"></div>
                     <div id="modal">
-                        <form method="post" enctype="multipart/form-data">
-                            <label for="avatar">Changer l’avatar</label>
-                            <input type="file" name="avatar" id="avatar" accept="image/*">
-                            <button type="submit">Mettre à jour</button>
-                        </form>
-
-                        <div id="close"></div>
+                        <div class="modal-content">
+                            <h2>Changer l'avatar</h2>
+                            {{ form_start(form) }}
+                                {{ form_widget(form) }}
+                                <div class="modal-option">
+                                    <button type="button" class="btn" id="close">Annuler</button>
+                                    <button type="submit" class="btn">Valider</button>
+                                </div> 
+                            {{ form_end(form) }}
+                        </div>
                     </div>
                     <div class="option"></div>
                 </div>

@@ -18,7 +18,7 @@
                 justify-content: center;
                 align-items: center;
 
-                #avatar {
+                #avatar-frame {
                     position: relative;
 
                     .option {
@@ -31,9 +31,10 @@
                         pointer-events: all;
                         z-index: 32;
                         cursor: pointer;
+                        transition: all 0.3s ease;
 
                         &:hover {
-                            background-color: rgba(255, 255, 0, 0.486);
+                            background-color: rgba(255, 174, 0, 0.486);
                             filter: blur(10px);
                         }
                     }
@@ -76,6 +77,81 @@
                         background-color: rgba(0, 0, 0, 0.5);
                         justify-content: center;
                         align-items: center;
+
+                        .modal-content {
+                            background: center/cover no-repeat url(../../../public/img/profil/modal-bg.png);
+                            width: 460px;
+                            padding: 30px;
+                            height: 300px;
+                            border-radius: 8px;
+
+                            h2 {
+                                    margin: 0;
+                                    text-align: center;
+                                    color: #25130A;
+                                    font-family: 'medievalsharp';
+                            }
+                            div:nth-child(1) {
+                                height: 100%;
+                                margin-bottom: 1rem;
+                            }
+
+                            #avatar {
+                                width: 100%;
+                                height: 100%;
+                            }
+
+                            form {
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                gap: 10px;
+                                padding: 30px 30px 50px 30px;
+                                width: 100%;
+                                height: 100%;
+                                box-sizing: border-box;
+
+                                .modal-option {
+                                    margin-top: auto;
+                                    justify-self: flex-end;
+                                    display: flex;
+                                    gap: 20px;
+                                }
+
+                                label {
+                                    box-sizing: border-box;
+                                    display: inline-block;
+                                    width: 100%;
+                                    height: 100%;
+                                    border: 5px dotted #25130A;
+                                    border-radius: 8px;
+                                    padding: 0.5rem 1.5rem;
+                                    font-family: 'medievalsharp';
+                                    margin-bottom: 1rem;
+                                    pointer-events: all;
+                                }
+
+                                input[type="file"] {
+                                    display: none;
+                                }
+
+                                button {
+                                    text-align: center;
+                                    background-color: #DAD4A6;
+                                    border: 2px solid #25130A;
+                                    border-radius: 100vw;
+                                    padding: 0.5rem 1.5rem;
+                                    font-family: 'medievalsharp';
+                                    cursor: pointer;
+                                    transition: all 0.3s ease;
+
+                                    &:hover {
+                                        background-color: #afa870;
+                                        color: #25130A;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -171,6 +247,7 @@
                         padding: 0.5rem 1.5rem;
                         font-family: 'medievalsharp';
                         cursor: pointer;
+                        transition: all 0.3s ease;
 
                         &:hover {
                             background-color: #afa870;
@@ -185,6 +262,7 @@
                         padding: 0.5rem 1.5rem;
                         font-family: 'medievalsharp';
                         cursor: pointer;
+                        transition: all 0.3s ease;
 
                         &:hover {
                             background-color: #DAD4A6;
@@ -199,6 +277,7 @@
                         padding: 0.5rem 1.5rem;
                         font-family: 'medievalsharp';
                         cursor: pointer;
+                        transition: all 0.3s ease;
 
                         &:hover {
                             background-color: #afa870;

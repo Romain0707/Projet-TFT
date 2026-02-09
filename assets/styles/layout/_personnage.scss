@@ -13,64 +13,11 @@
                 text-align: center;
         }
     }
+    
     .container_card_personnage{
         display: flex;
         flex-wrap: wrap;
         gap: 100px;
         justify-content: center;
-        .card_personnage{
-            max-width: 20%;
-            margin-bottom: 70px;
-            transition: all 0.4s ease;
-            .name_perso{
-                display: flex;
-                align-items: center;
-                img{
-                    width: 60px;
-                }
-            }
-            .stats{
-                background-image: url(../../../public/img/personnage/bg_stats.png);
-                background-size: cover;
-                background-position: bottom;
-                background-repeat: no-repeat;
-                border-image: url(../../../public/img/personnage/bg_stats.png) 7 11 12 8 fill / 7px 11px 12px 8px;
-                padding: 7px 11px 12px 8px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                .stats_perso{
-                    display: flex;
-                    img{
-                        width: 45px;
-                        object-fit: cover;
-                    }
-                }
-            }
-            .bg_perso{
-                background-image: url(../../../public/img/personnage/bg_perso.png);
-                background-size: cover;
-                background-position: bottom;
-                background-repeat: no-repeat;
-                display: flex;
-                justify-content: center;
-                max-width: 100%;
-                img{
-                    width: 30%;
-                }
-                .tank{
-                    width: 38%;
-                }
-                .archer{
-                    width: 34%;
-                }
-                .longSword{
-                    width: 41%;
-                }
-            }
-        }
     }
-}
-.card_personnage:hover{
-    box-shadow: 0px 9px 10px #DAD4A6;
 }

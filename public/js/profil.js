@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     optionBtn.addEventListener('click', () => {
         const modal = document.getElementById('modal');
-        modal.style.display = 'block';
+        modal.style.display = 'flex';
     });
 
     const closeBtn = document.getElementById('close');  

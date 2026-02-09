@@ -43,7 +43,8 @@
         "symfony/webpack-encore-bundle": "^2.4",
         "symfony/yaml": "7.4.*",
         "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^2.12|^3.0"
+        "twig/twig": "^2.12|^3.0",
+        "vich/uploader-bundle": "^2.9"
     },
     "config": {
         "allow-plugins": {
@@ -92,7 +93,7 @@
     },
     "extra": {
         "symfony": {
-            "allow-contrib": false,
+            "allow-contrib": true,
             "require": "7.4.*"
         }
     },

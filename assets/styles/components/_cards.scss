@@ -1,0 +1,78 @@
+.card_personnage {
+    position: relative;
+    width: 358px;
+    height: 358px;
+    background-image: url(../../../public/img/cards/card-bg.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+
+    .card_personnage_name {
+        margin-top: 36px;
+        font-size: 1.5rem;
+        line-height: 0;
+        text-align: center;
+        color: rgb(248, 194, 84);
+        font-family: 'medievalsharp';
+    }
+
+    .card_personnage_role {
+        margin-top: 27px;
+        font-size: 0.9rem;
+        line-height: 0;
+        text-align: center;
+        font-family: 'medievalsharp';
+        color: rgb(255, 209, 117);
+    }
+
+    .card_personnage_img {
+        width: 100%;
+        height: 120px;
+        
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+        }
+    }
+
+    .card_personnage_stats {
+            width: 100%;
+            height: 150px;
+            position: relative;
+        
+        .stats_perso {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            font-family: 'medievalsharp';
+
+            p {
+                &:nth-child(1) {
+                    position: absolute;
+                    top: 3%;
+                    left: 31%;
+                }
+
+                &:nth-child(2) {
+                    position: absolute;
+                    top: 3%;
+                    left: 68%;
+                }
+
+                &:nth-child(3) {
+                    position: absolute;
+                    top: 36%;
+                    left: 31%;
+                }
+
+                &:nth-child(4) {
+                    position: absolute;
+                    top: 36%;
+                    left: 68%;
+                }
+            }
+        }
+    }
+}

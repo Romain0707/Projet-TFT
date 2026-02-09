@@ -101,8 +101,8 @@
       ctx.lineTo(p01.x, p01.y);
       ctx.closePath();
 
-      ctx.strokeStyle = "rgb(255, 0, 0)";
-      ctx.stroke();
+      // ctx.strokeStyle = "rgb(255, 0, 0)";
+      // ctx.stroke();
     }
 
     // ============================================================
