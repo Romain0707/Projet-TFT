@@ -1,0 +1,96 @@
+.banner_team{
+    background: center/cover no-repeat fixed url(../../../public/img/team/BG_team.png);
+    #hero{
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        h1{
+            color: #DAD4A6;
+            -webkit-text-stroke: 1px #686868; 
+            font-size: 70px;
+            font-family: 'medievalsharp';
+        }  
+    }
+    .container__character-team {
+        display: flex;
+        justify-content: space-around;
+        gap: 1rem;
+    }
+    
+    .team-container{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 50px;
+
+        .character-team {
+            border: 5px solid #ccc;
+            padding: 1rem;
+            width: 250px;
+            height: 350px;
+        }
+
+
+            h2{
+                text-align: center;
+                color: white;
+                font-family: 'medievalsharp';
+        }
+        .team-name{
+                 width: 250px;
+                height: 40px;
+                border-radius: 10px;
+                color: white;
+                background-color:#D5D8D1;
+                text-align: center;
+                font-family: 'medievalsharp';
+        }
+        
+    }
+    .filters-button{
+        display: flex;
+        justify-content: center;
+        .filter-button{
+            color: black;
+            background-color: white;
+            padding: 8px 20px 8px 20px;
+            margin: 10px;
+            font-size: 14px;
+            font-family: 'medievalsharp';
+            box-shadow: 0px 5px black, 0px -5px black, 5px 0px black, -5px 0px black, 0px 10px #00000038, 5px 5px #00000038, -5px 5px #00000038, inset 0px 5px #ffffff36 ;
+            text-decoration: none;
+            cursor: pointer;
+            .filter-button:active {
+                transform: translateY(5px);
+                box-shadow: 0px 5px black, 0px -5px black, 5px 0px black, -5px 0px black,inset 0px 5px #00000038;
+            }
+        }
+    }
+}
+.card-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.character-card {
+    border: 1px solid #ccc;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    width: 358px;
+    height: 358px;
+    background-image: url(../../../public/img/card-bg.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+.character-stats{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
