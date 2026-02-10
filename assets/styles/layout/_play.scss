@@ -1,0 +1,62 @@
+.banner_play{
+    background: center/cover no-repeat fixed url(../../../public/img/bg_play.png);
+    .class_name{
+        height: 55vh;
+        display: flex;        
+        justify-content: center;
+        align-items: center;
+        font-family: 'medievalsharp';
+        h1{
+            margin: 0%; 
+        }
+    }
+
+    .team{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+    .perso_name{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        p{
+            font-family: 'medievalsharp';
+            padding: 10px;
+            background-color:#A1A198 ;
+            border-radius: 10px;
+            opacity: 80%;
+            border: 2px solid #5C5C51 ;
+        }
+        img{
+            width: 150px;
+        }
+    }
+    .container_play{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    .play{
+        color: black;
+        background-color: #686868;
+        padding: 15px 50px 15px 50px;
+        margin: 10px;
+        font-size: 25px;
+        font-family: 'medievalsharp';
+        box-shadow: 0px 5px black, 0px -5px black, 5px 0px black, -5px 0px black, 0px 10px #00000038, 5px 5px #00000038, -5px 5px #00000038, inset 0px 5px #ffffff36 ;        
+        display: inline-block; 
+        a{
+            text-decoration: none;
+            color: white;
+            display: inline-block; 
+        } 
+    } 
+    .play:active {
+        transform: translateY(5px);
+        box-shadow: 0px 5px black, 0px -5px black, 5px 0px black, -5px 0px black,inset 0px 5px #00000038;
+        }
+    }
+}

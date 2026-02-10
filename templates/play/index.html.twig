@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello PlayController!{% endblock %}
+
+{% block body %}
+<div class='banner_play'>
+    <div class='container_play'>
+        <div class='class_name'>
+            <h1>{{ team.name }}</h1>
+        </div>
+        <div class='team'>
+            {% for teamActive in team.personnage %}
+                <div class='perso_name'>
+                    <p>{{ teamActive.name }}</p>
+                    <img src="{{ teamActive.imageUrl }}" alt="">
+                </div>
+            {% endfor %}
+        </div>
+        <div class='play'>
+            <a href="{{path('game_placement_ui')}}">Jouer</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
