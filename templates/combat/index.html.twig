@@ -3,7 +3,7 @@
 {% block title %}Combat{% endblock %}
 
 {% block body %}
-<div id="controls" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+{# <div id="controls" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
   <button id="btnPlay">Play</button>
   <button id="btnPause">Pause</button>
   <button id="btnStep">Step</button>
@@ -23,9 +23,8 @@
 </div>
 
 <div style="display:flex; justify-content:center; align-items:center; height:100vh; width:100%; background-color:#eee;">
-  <canvas id="fight" width="900" height="520" style="border:1px solid #333;  "></canvas>
+  <canvas id="fight" width="900" height="520" style="border:1px solid #333;"></canvas>
 </div>
-{# <script src="{{ asset('js/arena-loaders.js') }}"></script> #}
 <script src="{{ asset('js/fight-canvas.js') }}"></script>
 <script> 
   (async () => {
@@ -34,5 +33,20 @@
     if (!res.ok) { console.error(data); return; }
     startFight(data); // fourni par fight-canvas.js
   })();
-</script> 
+</script>  #}
+
+<div class="scene">
+  <div class="board-wrap">
+    <div id="board" class="board" aria-label="Battle board"></div>
+    <div id="units" class="units-layer" aria-label="Units"></div>
+  </div>
+
+  <div class="hud">
+    <button id="btnPlay">Play</button>
+    <button id="btnStep">Step</button>
+    <span id="status"></span>
+  </div>
+</div>
+
+<script src="{{ asset('js/game-animation.js') }}"></script>
 {% endblock %}
