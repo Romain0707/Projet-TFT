@@ -192,7 +192,7 @@ async function init() {
     queue = buildQueue(data.rounds);
     cursor = 0;
 
-    status.textContent = `Winner: ${data.winner}`;
+    // status.textContent = `Winner: ${data.winner}`;
   } catch (e) {
     console.error(e);
     if (status) status.textContent = `Erreur: ${e.message}`;

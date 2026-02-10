@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
 use DateTimeImmutable;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use App\Repository\UserRepository;
+use Symfony\component\HttpFoundation\File\File;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\HttpFoundation\File\File;
-use Vich\UploaderBundle\Mapping\Attribute as Vich;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -132,10 +132,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function __serialize(): array
     {
-        $data = (array) $this;
-        $data["\0" . self::class . "\0password"] = hash('crc32c', $this->password);
-        
-        return $data;
+        return [
+            'id' => $this->id,
+            'username' => $this->username,   // <-- indispensable si property: username
+            'roles' => $this->roles,
+            // tu peux garder ton masquage si tu veux, mais pas obligatoire pour le refresh
+            'password' => $this->password ? hash('crc32c', $this->password) : null,
+            'imageName' => $this->imageName,
+        ];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->id = $data['id'] ?? null;
+        $this->username = $data['username'] ?? null;  // <-- indispensable
+        $this->roles = $data['roles'] ?? [];
+        $this->password = $data['password'] ?? null;
+        $this->imageName = $data['imageName'] ?? null;
     }
 
     #[\Deprecated]

@@ -1,283 +1,291 @@
 
 
 
-// #board {
-//     display: grid;
-//     grid-template-columns: repeat(6, 60px);
-//     grid-template-rows: repeat(5, 60px);
-//     gap: 4px;
-//     margin-bottom: 20px;
+#board {
+    display: grid;
+    grid-template-columns: repeat(6, 60px);
+    grid-template-rows: repeat(5, 60px);
+    gap: 4px;
+    margin-bottom: 20px;
+}
+
+.cell {
+    width: 60px;
+    height: 60px;
+    border: 1px solid #333;
+    background: #fafafa;
+    cursor: pointer;
+}
+
+.cell.A { background: #cce5ff9a; }
+.cell.B { background: #ffd6d6a8; }
+
+.unit {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: center;
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    pointer-events: all;
+}
+
+.unit img {
+    width: 100px;  /* largeur de chaque sprite */
+    height: 100px; /* hauteur de chaque sprite */
+    object-fit: none; /* Important si tu utilises une image sprite */
+    object-position: 0px;
+    transform: scale(3);
+    pointer-events: none;
+}
+
+/* Animation de l'Idle (changer de frame) */
+@keyframes idleAnimation {
+    0% { object-position: 0px; }
+    100% { object-position: -600px; } /* Change selon la taille de ton sprite sheet */
+}
+
+.unit img {
+    animation: idleAnimation 1s steps(6) infinite; /* 1s = durée de 1 boucle, steps(5) = 5 frames */
+}
+
+.unit.selected {
+    outline: 3px solid orange;
+}
+
+.unit.removed {
+    opacity: 0.5;
+    text-decoration: line-through;
+    pointer-events: none;
+}
+
+.cell.forbidden {
+    background: repeating-linear-gradient(
+        45deg,
+        #ccc,
+        #ccc 10px,
+        #eee 10px,
+        #eee 20px
+    );
+    cursor: not-allowed;
+}
+
+.cell.allowed-A {
+    background-color: #e7f0faa4;
+}
+
+.cell.allowed-B {
+    background-color: #ffebebb7;
+}
+
+.container__character-team {
+    display: flex;
+    justify-content: space-around;
+    gap: 1rem;
+}
+
+.character-team {
+    border: 5px solid #ccc;
+    padding: 1rem;
+    width: 250px;
+    height: 350px;
+}
+
+.character-team.selected {
+    border-color: orange;
+    box-shadow: 0 0 10px orange;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// :root{
+//   /* board size */
+//   --w: 6;
+//   --h: 4;
+
+//   /* tile sizing */
+//   --cell: 110px;
+//   --gap: 2px;
+
+//   /* camera / perspective */
+//   --tilt: 60deg;          /* profondeur (64–72deg) */
+//   --yaw: 0deg;           /* léger angle gauche/droite */
+//   --thickness: 0px;      /* épaisseur du plateau */
 // }
 
-// .cell {
-//     width: 60px;
-//     height: 60px;
-//     border: 1px solid #333;
-//     background: #fafafa;
-//     cursor: pointer;
+// *{ box-sizing: border-box; }
+
+// body{
+//   margin: 0;
 // }
 
-// .cell.A { background: #cce5ff9a; }
-// .cell.B { background: #ffd6d6a8; }
-
-// .unit {
-//     display: flex;
-//     flex-direction: column-reverse;
-//     align-items: center;
-//     justify-content: center;
-//     margin: 5px;
-//     padding: 5px;
-//     border: 1px solid #ccc;
-//     background-color: #f0f0f0;
-//     pointer-events: all;
+// .container {
+//   padding-block: 10rem;
+//   background: url(../../public/images/arene-background.png);
+//   background-repeat: no-repeat;
+//   background-position: center;
+//   background-size: cover;
 // }
 
-// .unit img {
-//     width: 100px;  /* largeur de chaque sprite */
-//     height: 100px; /* hauteur de chaque sprite */
-//     object-fit: none; /* Important si tu utilises une image sprite */
-//     object-position: 0px;
-//     transform: scale(3);
-//     pointer-events: none;
+// /* ---- Layout ---- */
+// .scene{
+//   min-height: 75vh;
+  
+//   display:flex;
+//   flex-direction: column;
+//   align-items:center;
+//   justify-content:center;
+//   gap: 16px;
+//   padding: 18px;
+//   background-image: url(../../public/images/arene-background.png);
+//   background-repeat: no-repeat;
+//   background-position: center;
+//   background-size: contain;
 // }
 
-// /* Animation de l'Idle (changer de frame) */
-// @keyframes idleAnimation {
-//     0% { object-position: 0px; }
-//     100% { object-position: -600px; } /* Change selon la taille de ton sprite sheet */
+// .board-wrap{
+//   position: relative;
+//   top: 100px;
+
+//   width: calc(var(--w) * var(--cell) + (var(--w) - 1) * var(--gap));
+//   height: calc(var(--h) * var(--cell) + (var(--h) - 1) * var(--gap));
+
+//   perspective: 1100px;
+//   perspective-origin: 50% 35%;
 // }
 
-// .unit img {
-//     animation: idleAnimation 1s steps(6) infinite; /* 1s = durée de 1 boucle, steps(5) = 5 frames */
+// /* ---- Board ---- */
+// .board{
+//   position: absolute;
+//   inset: 0;
+
+//   display: grid;
+//   grid-template-columns: repeat(var(--w), var(--cell));
+//   grid-template-rows: repeat(var(--h), var(--cell));
+//   gap: var(--gap);
+
+//   transform-style: preserve-3d;
+//   transform-origin: 50% 80%;
+//   transform:
+//     rotateX(var(--tilt))
+//     rotateY(var(--yaw))
+//     translateY(14px);
+
+//   border-radius: 10px;
+//   z-index: 1;
 // }
 
-// .unit.selected {
-//     outline: 3px solid orange;
-// }
-
-// .unit.removed {
-//     opacity: 0.5;
-//     text-decoration: line-through;
-//     pointer-events: none;
-// }
-
-// .cell.forbidden {
-//     background: repeating-linear-gradient(
-//         45deg,
-//         #ccc,
-//         #ccc 10px,
-//         #eee 10px,
-//         #eee 20px
-//     );
-//     cursor: not-allowed;
-// }
-
-// .cell.allowed-A {
-//     background-color: #e7f0faa4;
-// }
-
-// .cell.allowed-B {
-//     background-color: #ffebebb7;
-// }
-
-// .container__character-team {
-//     display: flex;
-//     justify-content: space-around;
-//     gap: 1rem;
-// }
-
-// .character-team {
-//     border: 5px solid #ccc;
-//     padding: 1rem;
-//     width: 250px;
-//     height: 350px;
-// }
-
-// .character-team.selected {
-//     border-color: orange;
-//     box-shadow: 0 0 10px orange;
+// /* tiles */
+// .cell{
+//   position: relative;
+//   border-radius: 6px;
+//   overflow: hidden;
+//   transform: translateZ(2px);
 // }
 
 
+// /* ---- Units layer ---- */
+// .units-layer{
+//   position: absolute;
+//   inset: 0;
+//   pointer-events: none;
 
+//   transform-style: preserve-3d;
+//   transform-origin: 50% 80%;
+//   transform:
+//     rotateX(var(--tilt))
+//     rotateY(var(--yaw))
+//     translateY(14px)
+//     translateZ(2px);
 
+//   z-index: 2;
+// }
 
+// /* “standing sprites” */
+// .unit{
+//   position:absolute;
 
+//   width: calc(var(--cell) * .72);
+//   height: calc(var(--cell) * 1.05);
 
+//   border-radius: 14px;
+//   display:flex;
+//   align-items:flex-end;
+//   justify-content:center;
+//   padding-bottom: 10px;
 
+//   font: 700 14px/1 system-ui, sans-serif;
+//   letter-spacing: .2px;
 
+//   transform-style: preserve-3d;
 
+//   transform: translate3d(0,0,18px)
+//              rotateX(calc(-1 * var(--tilt)))
+//              rotateY(calc(-1 * var(--yaw)));
 
+//   transition: transform 520ms cubic-bezier(.2,.8,.2,1);
+// }
 
+// /* team colors */
+// .unit.teamA{
+//   background: linear-gradient(#f5e6c8, #d6b77f);
+//   color: #2b1a10;
+// }
+// .unit.teamB{
+//   background: linear-gradient(#2b2b2b, #101010);
+//   color: #eaeaea;
+//   border: 1px solid rgba(255,255,255,.08);
+// }
 
+// /* hit flash */
+// .unit.hit{
+//   animation: hitFlash 260ms ease;
+// }
+// @keyframes hitFlash{
+//   0%   { filter: brightness(1); }
+//   40%  { filter: brightness(2.2); }
+//   100% { filter: brightness(1); }
+// }
 
+// /* ---- HUD ---- */
+// .hud{
+//   display:flex;
+//   position: relative;
+//   top: -500px;
+//   gap: 10px;
+//   align-items:center;
+//   color:#eee;
+//   font: 600 14px/1 system-ui, sans-serif;
+// }
 
+// .hud button{
+//   cursor:pointer;
+//   border:0;
+//   padding:10px 14px;
+//   border-radius: 10px;
+//   background:#ffffff;
+// }
 
-
-
-
-
-
-:root{
-  /* board size */
-  --w: 6;
-  --h: 4;
-
-  /* tile sizing */
-  --cell: 110px;
-  --gap: 2px;
-
-  /* camera / perspective */
-  --tilt: 60deg;          /* profondeur (64–72deg) */
-  --yaw: 0deg;           /* léger angle gauche/droite */
-  --thickness: 0px;      /* épaisseur du plateau */
-}
-
-*{ box-sizing: border-box; }
-
-body{
-  margin: 0;
-  background: #2b2b2b;
-}
-
-/* ---- Layout ---- */
-.scene{
-  min-height: 75vh;
-  display:flex;
-  flex-direction: column;
-  align-items:center;
-  justify-content:center;
-  gap: 16px;
-  padding: 18px;
-  background-image: url(../../public/images/arene-background.png);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-}
-
-.board-wrap{
-  position: relative;
-  top: 100px;
-
-  width: calc(var(--w) * var(--cell) + (var(--w) - 1) * var(--gap));
-  height: calc(var(--h) * var(--cell) + (var(--h) - 1) * var(--gap));
-
-  perspective: 1100px;
-  perspective-origin: 50% 35%;
-}
-
-/* ---- Board ---- */
-.board{
-  position: absolute;
-  inset: 0;
-
-  display: grid;
-  grid-template-columns: repeat(var(--w), var(--cell));
-  grid-template-rows: repeat(var(--h), var(--cell));
-  gap: var(--gap);
-
-  transform-style: preserve-3d;
-  transform-origin: 50% 80%;
-  transform:
-    rotateX(var(--tilt))
-    rotateY(var(--yaw))
-    translateY(14px);
-
-  border-radius: 10px;
-  z-index: 1;
-}
-
-/* tiles */
-.cell{
-  position: relative;
-  border-radius: 6px;
-  overflow: hidden;
-  transform: translateZ(2px);
-}
-
-
-/* ---- Units layer ---- */
-.units-layer{
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-
-  transform-style: preserve-3d;
-  transform-origin: 50% 80%;
-  transform:
-    rotateX(var(--tilt))
-    rotateY(var(--yaw))
-    translateY(14px)
-    translateZ(2px);
-
-  z-index: 2;
-}
-
-/* “standing sprites” */
-.unit{
-  position:absolute;
-
-  width: calc(var(--cell) * .72);
-  height: calc(var(--cell) * 1.05);
-
-  border-radius: 14px;
-  display:flex;
-  align-items:flex-end;
-  justify-content:center;
-  padding-bottom: 10px;
-
-  font: 700 14px/1 system-ui, sans-serif;
-  letter-spacing: .2px;
-
-  transform-style: preserve-3d;
-
-  transform: translate3d(0,0,18px)
-             rotateX(calc(-1 * var(--tilt)))
-             rotateY(calc(-1 * var(--yaw)));
-
-  transition: transform 520ms cubic-bezier(.2,.8,.2,1);
-}
-
-/* team colors */
-.unit.teamA{
-  background: linear-gradient(#f5e6c8, #d6b77f);
-  color: #2b1a10;
-}
-.unit.teamB{
-  background: linear-gradient(#2b2b2b, #101010);
-  color: #eaeaea;
-  border: 1px solid rgba(255,255,255,.08);
-}
-
-/* hit flash */
-.unit.hit{
-  animation: hitFlash 260ms ease;
-}
-@keyframes hitFlash{
-  0%   { filter: brightness(1); }
-  40%  { filter: brightness(2.2); }
-  100% { filter: brightness(1); }
-}
-
-/* ---- HUD ---- */
-.hud{
-  display:flex;
-  position: relative;
-  top: 100px;
-  gap: 10px;
-  align-items:center;
-  color:#eee;
-  font: 600 14px/1 system-ui, sans-serif;
-}
-
-.hud button{
-  cursor:pointer;
-  border:0;
-  padding:10px 14px;
-  border-radius: 10px;
-  background:#ffffff;
-}
-
-#status{
-  opacity: .85;
-}
+// #status{
+//   opacity: .85;
+// }

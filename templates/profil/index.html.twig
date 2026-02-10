@@ -9,7 +9,7 @@
             <div class="avatar-container">
                 <div id="avatar-frame">
                     <div class="avatar-img">
-                        <img src="" alt="">
+                        <img src="{{ asset('uploads/images/' ~ user.imageName) }}" alt="Image de l'avatar">
                     </div>
                     <div class="avatar-border"></div>
                     <div id="modal">
@@ -29,7 +29,7 @@
             </div>
 
             <div id="username">
-                <h2>{{ username }}</h2>
+                <h2>{{ user.username }}</h2>
             </div>
         </div>
     </section>

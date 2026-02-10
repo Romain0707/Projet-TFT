@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Team;
 use App\Form\AvatarType;
 use App\Repository\TeamRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +20,7 @@ final class ProfilController extends AbstractController
     public function index(Security $user, TeamRepository $teamRepo, Request $request, EntityManagerInterface $em): Response
     {
         $team = $teamRepo->findBy(['user_id' => $user->getId()]);
-        $form = $this->createForm(AvatarType::class);
+        $form = $this->createForm(AvatarType::class, $user->getUser());
         $form->handleRequest($request);
 
         if($form->isSubmitted()&&$form->isValid()) {
@@ -29,6 +30,7 @@ final class ProfilController extends AbstractController
         
         return $this->render('profil/index.html.twig', [
             'username' => $user->getUsername(),
+            'user' => $user->getUser(),
             'team' => $team,
             'form' => $form->createView(), 
         ]);
