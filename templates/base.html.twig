@@ -30,13 +30,21 @@
         <footer>
             <div class='container_footer'>
                 <div>
-                    <p>TFP</p>
-                    <p>© Copyright , Romain,Leo et Mylan</p>
+                    <ul>
+                        <li><a href="{{path('app_accueil')}}">Accueil</a></li>
+                        <li><a href="{{path('app_personnage')}}">Personnage</a></li>
+                        {% if is_granted('ROLE_USER')%}
+                            <li><a href="{{path('profil')}}">Profil</a></li>
+                        {% endif %}
+                        {% if is_granted('ROLE_USER') == false %}
+                            <li><a href="{{path('login')}}">Connexion</a></li>
+                        {% endif %}
+                        {% if is_granted('ROLE_USER') %}
+                            <li><a href="{{path('app_play')}}">Play</a></li>
+                            <li><a href="{{path('logout')}}">Deconnexion</a></li>
+                        {% endif %}
+                    </ul>
                 </div>
-                <div>
-                    <img src="{{asset('img/header/logoTFP.png')}}" alt="logoTFP">
-                </div>
-            </div>
         </footer>
     </body>
     {{ encore_entry_script_tags('app') }}

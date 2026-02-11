@@ -1,11 +1,8 @@
 footer{
-    background-color:#A1A198 ;
     .container_footer{
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        img{
-            width:70px ;
+        ul{
+            display: flex;
+            list-style: none;
+            }
         }
     }
-}

@@ -1,0 +1,41 @@
+.banner_placement{
+    background: center/cover no-repeat fixed url(../../../public/img/bg_placement.png);
+    .teamA-units{
+        font-family: 'medievalsharp';
+        color: white;
+            }
+        .placement-container{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            h2{
+                color: #DAD4A6;
+                -webkit-text-stroke: 1px #686868; 
+                font-size: 70px;
+                font-family: 'medievalsharp';
+    }
+            
+            #board {
+                display: grid;
+                grid-template-columns: repeat(6, 60px);
+                grid-template-rows: repeat(5, 60px);
+                gap: 4px;
+                margin-bottom: 20px;
+                text-align: center;
+                
+                .cell {
+                width: 60px;
+                height: 60px;
+                border: 1px solid #333;
+                background: #fafafa;
+                cursor: pointer;
+            }
+                .cell.A { 
+                    background: #cce5ff9a; 
+                    }
+                .cell.B { 
+                    background: #ffd6d6a8; 
+            }
+        }
+    }
+}
