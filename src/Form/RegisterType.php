@@ -4,35 +4,25 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
-class RegisterFormType extends AbstractType
+class RegisterType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('username', TextType::class, [
-                'attr' => [
-                    'class' => 'form-input',
-                    'placeholder' => 'Pseudonyme'
-                ],
-                'label' => false
+                'label'=>'Nom d\'utilisateur :'
             ])
-            ->add('password', TextType::class, [
-                'attr' => [
-                    'class' => 'form-input',
-                    'placeholder' => 'Mots de passe'
-                ],
-                'label' => false
+            ->add('password', PasswordType::class,[
+                'label'=>'Mot de passe :'
             ])
             ->add('submit', SubmitType::class, [
-                'attr' => [
-                    'class' => 'form-submit',
-                ],
-                'label' => 'S\'inscrire'
+                'label'=>'S\'inscrire'
             ])
         ;
     }
