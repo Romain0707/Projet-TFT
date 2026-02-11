@@ -3,7 +3,7 @@
     <div class="card_personnage_name">{{ hero.name }}</div>
     <div class="card_personnage_role {{hero.role.name}}">{{hero.role.name}}</div>
     <div class='card_personnage_img'>
-        <img src="{{hero.imageUrl}}" alt="Image du Héro">
+        <img src="{{asset('img/') ~ hero.imageUrl}}" alt="Image du Héro">
     </div>
     <div class='card_personnage_stats'>
         <div class='stats_perso'>

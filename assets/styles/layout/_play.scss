@@ -1,13 +1,27 @@
+:root {
+    --pixel-size: 6;
+}
+
+.pixelart {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
 .banner_play{
     background: center/cover no-repeat fixed url(../../../public/img/bg_play.png);
-    .class_name{
-        height: 55vh;
-        display: flex;        
-        justify-content: center;
-        align-items: center;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .class_name {
+        text-align: center;
+        margin-top: 1rem;
         font-family: 'medievalsharp';
-        h1{
-            margin: 0%; 
+        margin-bottom: 3rem;
+
+        h1 {
+            margin: 0%;
         }
     }
 
@@ -16,47 +30,97 @@
         flex-direction: row;
         align-items: center;
         justify-content: center;
+        margin-bottom: 5rem;
+
+        .characters-team-card {
+            position: relative;
+            pointer-events: none;
+            width: 200px;
+            height: 200px;
+
+            &:nth-child(1) {
+                bottom: 20px;
+            }
+
+            &:nth-child(3) {
+                bottom: 20px;
+            }
+
+            .characters {
+                position: absolute;
+                top: -100%;
+                left: -105%;
+                width: calc(100px * var(--pixel-size));
+                height: calc(100px * var(--pixel-size));
+                overflow: hidden;
+                pointer-events: none;
+
+                .characters_spritesheet {
+                    animation: moveSpritesheet 1s steps(6) infinite;
+                    width: calc(600px * var(--pixel-size));
+                    position: absolute;
+                    pointer-events: none;
+                }
+            }
+
+            .perso_name{
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translate(-50%);
+                
+                p {
+                    margin: 0;
+                    text-align: center;
+                    font-family: 'medievalsharp';
+                    padding: 10px;
+                    background-color:#A1A198 ;
+                    border-radius: 10px;
+                    opacity: 80%;
+                    border: 2px solid #5C5C51 ;
+                }
+            }
+        }
     }
-    .perso_name{
+
+    .container_play {
         display: flex;
         flex-direction: column;
-        justify-content: center;
         align-items: center;
-        p{
-            font-family: 'medievalsharp';
-            padding: 10px;
-            background-color:#A1A198 ;
-            border-radius: 10px;
-            opacity: 80%;
-            border: 2px solid #5C5C51 ;
-        }
-        img{
-            width: 150px;
-        }
-    }
-    .container_play{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     
-    .play{
-        color: black;
-        background-color: #686868;
-        padding: 15px 50px 15px 50px;
-        margin: 10px;
-        font-size: 25px;
-        font-family: 'medievalsharp';
-        box-shadow: 0px 5px black, 0px -5px black, 5px 0px black, -5px 0px black, 0px 10px #00000038, 5px 5px #00000038, -5px 5px #00000038, inset 0px 5px #ffffff36 ;        
-        display: inline-block; 
-        a{
-            text-decoration: none;
-            color: white;
+        .play {
+            color: black;
+            background-color: #686868;
+            padding: 15px 50px 15px 50px;
+            margin: 10px;
+            font-size: 25px;
+            font-family: 'medievalsharp';
+            box-shadow: 0px 5px black, 0px -5px black, 5px 0px black, -5px 0px black, 0px 10px #00000038, 5px 5px #00000038, -5px 5px #00000038, inset 0px 5px #ffffff36 ;        
             display: inline-block; 
+            pointer-events: all;
+            cursor: pointer;
+
+            a {
+                text-decoration: none;
+                color: white;
+                display: inline-block; 
+                pointer-events: all;
+                cursor: pointer;
+            } 
         } 
-    } 
-    .play:active {
-        transform: translateY(5px);
-        box-shadow: 0px 5px black, 0px -5px black, 5px 0px black, -5px 0px black,inset 0px 5px #00000038;
+
+        .play:active {
+            transform: translateY(5px);
+            box-shadow: 0px 5px black, 0px -5px black, 5px 0px black, -5px 0px black,inset 0px 5px #00000038;
         }
     }
+}
+
+@keyframes moveSpritesheet {
+   from {
+      transform: translate3d(0px,0,0)
+   }
+   to {
+      transform: translate3d(-100%,0,0)
+   }
 }

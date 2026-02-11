@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello PlayController!{% endblock %}
+{% block title %}Jouer !{% endblock %}
 
 {% block body %}
 <div class='banner_play'>
@@ -10,9 +10,13 @@
         </div>
         <div class='team'>
             {% for teamActive in team.personnage %}
-                <div class='perso_name'>
-                    <p>{{ teamActive.name }}</p>
-                    <img src="{{ teamActive.imageUrl }}" alt="">
+                <div class="characters-team-card">
+                    <div class="characters">
+                        <img src="{{asset('img/') ~ teamActive.imageUrl }}" alt="Image du personnage" class="characters_spritesheet pixelart">
+                    </div>
+                    <div class='perso_name'>
+                        <p>{{ teamActive.name }}</p>
+                    </div>
                 </div>
             {% endfor %}
         </div>
