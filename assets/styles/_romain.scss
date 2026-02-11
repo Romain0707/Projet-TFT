@@ -7,93 +7,93 @@
 //     grid-template-rows: repeat(5, 60px);
 //     gap: 4px;
 //     margin-bottom: 20px;
+
+    
+//     .cell {
+//         width: 60px;
+//         height: 60px;
+//         border: 1px solid #333;
+//         background: #fafafa;
+//         cursor: pointer;
+//     }
+
+//     .cell.A { background: #cce5ff9a; }
+//     .cell.B { background: #ffd6d6a8; }
+
+//     .unit {
+//         display: flex;
+//         flex-direction: column-reverse;
+//         align-items: center;
+//         justify-content: center;
+//         margin: 5px;
+//         padding: 5px;
+//         border: 1px solid #ccc;
+//         background-color: #f0f0f0;
+//         pointer-events: all;
+//     }
+
+//     .unit img {
+//         width: 100px;  /* largeur de chaque sprite */
+//         height: 100px; /* hauteur de chaque sprite */
+//         object-fit: none; /* Important si tu utilises une image sprite */
+//         object-position: 0px;
+//         transform: scale(3);
+//         pointer-events: none;
+//     }
+
+//     .unit img {
+//         animation: idleAnimation 1s steps(6) infinite; /* 1s = durée de 1 boucle, steps(5) = 5 frames */
+//     }
+
+//     .unit.selected {
+//         outline: 3px solid orange;
+//     }
+
+//     .unit.removed {
+//         opacity: 0.5;
+//         text-decoration: line-through;
+//         pointer-events: none;
+//     }
+
+//     .cell.forbidden {
+//         background: repeating-linear-gradient(
+//             45deg,
+//             #ccc,
+//             #ccc 10px,
+//             #eee 10px,
+//             #eee 20px
+//         );
+//         cursor: not-allowed;
+//     }
+
+//     .cell.allowed-A {
+//         background-color: #e7f0faa4;
+//     }
+
+//     .cell.allowed-B {
+//         background-color: #ffebebb7;
+//     }
+
+//     .container__character-team {
+//         display: flex;
+//         justify-content: space-around;
+//         gap: 1rem;
+//     }
+
+//     .character-team {
+//         border: 5px solid #ccc;
+//         padding: 1rem;
+//         width: 250px;
+//         height: 350px;
+//     }
+
+//     .character-team.selected {
+//         border-color: orange;
+//         box-shadow: 0 0 10px orange;
+//     }
 // }
 
-// .cell {
-//     width: 60px;
-//     height: 60px;
-//     border: 1px solid #333;
-//     background: #fafafa;
-//     cursor: pointer;
-// }
-
-// .cell.A { background: #cce5ff9a; }
-// .cell.B { background: #ffd6d6a8; }
-
-// .unit {
-//     display: flex;
-//     flex-direction: column-reverse;
-//     align-items: center;
-//     justify-content: center;
-//     margin: 5px;
-//     padding: 5px;
-//     border: 1px solid #ccc;
-//     background-color: #f0f0f0;
-//     pointer-events: all;
-// }
-
-// .unit img {
-//     width: 100px;  /* largeur de chaque sprite */
-//     height: 100px; /* hauteur de chaque sprite */
-//     object-fit: none; /* Important si tu utilises une image sprite */
-//     object-position: 0px;
-//     transform: scale(3);
-//     pointer-events: none;
-// }
-
-// /* Animation de l'Idle (changer de frame) */
 // @keyframes idleAnimation {
 //     0% { object-position: 0px; }
 //     100% { object-position: -600px; } /* Change selon la taille de ton sprite sheet */
-// }
-
-// .unit img {
-//     animation: idleAnimation 1s steps(6) infinite; /* 1s = durée de 1 boucle, steps(5) = 5 frames */
-// }
-
-// .unit.selected {
-//     outline: 3px solid orange;
-// }
-
-// .unit.removed {
-//     opacity: 0.5;
-//     text-decoration: line-through;
-//     pointer-events: none;
-// }
-
-// .cell.forbidden {
-//     background: repeating-linear-gradient(
-//         45deg,
-//         #ccc,
-//         #ccc 10px,
-//         #eee 10px,
-//         #eee 20px
-//     );
-//     cursor: not-allowed;
-// }
-
-// .cell.allowed-A {
-//     background-color: #e7f0faa4;
-// }
-
-// .cell.allowed-B {
-//     background-color: #ffebebb7;
-// }
-
-// .container__character-team {
-//     display: flex;
-//     justify-content: space-around;
-//     gap: 1rem;
-// }
-
-// .character-team {
-//     border: 5px solid #ccc;
-//     padding: 1rem;
-//     width: 250px;
-//     height: 350px;
-// }
-
-// .character-team.selected {
-//     border-color: orange;
-//     box-shadow: 0 0 10px orange;
 // }
