@@ -29,7 +29,12 @@
                 border: 1px solid #333;
                 background: #fafafa;
                 cursor: pointer;
+                transition: all 0.4s ease;
+
             }
+                .cell:hover{
+                    background:#A1A198 ;
+                }
                 .cell.A { 
                     background: #cce5ff9a; 
                     }
