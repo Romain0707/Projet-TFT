@@ -43,6 +43,9 @@ class Personnage
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image_url = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?array $animations = null;
+
     public function __construct()
     {
         $this->teams = new ArrayCollection();
@@ -160,6 +163,18 @@ class Personnage
     public function setImageUrl(?string $image_url): static
     {
         $this->image_url = $image_url;
+
+        return $this;
+    }
+
+    public function getAnimations(): ?array
+    {
+        return $this->animations;
+    }
+
+    public function setAnimations(?array $animations): static
+    {
+        $this->animations = $animations;
 
         return $this;
     }
