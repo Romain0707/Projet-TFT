@@ -1,8 +1,21 @@
 footer{
     .container_footer{
-        ul{
+        display: flex;            
+        align-items: center;
+        justify-content: space-around;
+        .nav-footer{
             display: flex;
-            list-style: none;
+            justify-content: space-evenly;
+            gap: 700px;
+            img{
+                width: 100px;
             }
+            ul{
+                display: flex;
+                flex-direction: column;
+                list-style: none;
+            }
+
+        } 
         }
     }
