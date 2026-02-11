@@ -3,25 +3,27 @@
 {% block title %}Combat{% endblock %}
 
 {% block body %}
-<div class="container">
-  <div class="backdrop-container">
-    <div class="scene">
-      <div class="board-wrap">
-        <div id="board" class="board" aria-label="Battle board"></div>
-        <div id="units" class="units-layer" aria-label="Units"></div>
-        <div class="effects-layer" id="effects"></div>
-      </div>
+<section id="combat">
+  <div class="container">
+    <div class="backdrop-container">
+      <div class="scene">
+        <div class="board-wrap">
+          <div id="board" class="board" aria-label="Battle board"></div>
+          <div id="units" class="units-layer" aria-label="Units"></div>
+          <div class="effects-layer" id="effects"></div>
+        </div>
 
-      <div class="hud">
-        <button id="btnPlay">Play</button>
-        <button id="btnStep">Step</button>
-        <button id="btnReplay">Replay</button>
-      </div>
+        <div class="hud">
+          <button id="btnPlay">Play</button>
+          <button id="btnStep">Step</button>
+          <button id="btnReplay">Replay</button>
+        </div>
 
-      <div id="resultBanner" class="resultBanner" hidden></div>
+        <div id="resultBanner" class="resultBanner" hidden></div>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
 <script src="{{ asset('js/game-animation.js') }}"></script>
 {% endblock %}
