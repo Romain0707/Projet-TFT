@@ -1,3 +1,6 @@
+@use '../abstracts/mixins' as m;
+@use '../abstracts/variables' as v;
+
 .banner_login{
     background: center/cover no-repeat fixed url(../../../public/img/login/bg_login.jpg);
     margin: 0;
@@ -22,19 +25,19 @@
             align-items: center;
             gap: 30px;
                 .btn_login{
-                    background-color: white;
-                    padding: 8px 12px;
-                    border-radius: 8px;
-                    text-decoration: none;
-                    display: inline-block;
-                    color: black;
-                    cursor: pointer;
-                    transition: all 0.4s ease;
+                    --button-background: #DAD4A6;
+                     @include m.step2v2(4px, black, var(--button-background));
+                    height: 20px;
+                    padding-inline: 3rem;
+                    appearance: none;
+                    border: none;
+                    font-family: 'medievalsharp';
+                    background-color: var(--button-background);
+                    transition: all 0.3s ease;
+
                  }
                  .btn_login:hover{
-                    background-color: black;
-                    color: white;
-                    font-family: 'medievalsharp';
+                    --button-background: #beb35a;
                 }
                 .inscription_btn{
                     margin-bottom: 100px;
@@ -42,14 +45,32 @@
                         color: white;
                         font-size: 20px;
                     }
-                    
                 }
             .form-control{
-                width: 500px;
-                height: 40px;
-                border-radius: 10px;
-                background-color:#DAD4A6;
-                
+                @include m.step2v2(4px, black, rgb(232, 240, 254));
+                background-color: rgb(232, 240, 254);
+                height: 30px;
+                width: 250px;
+                appearance: none;
+                border: none;
+                font-family: 'medievalsharp';
+
+                    &:nth-child(1) {
+                        text-transform: capitalize;
+                        }
+                    &:focus {
+                        outline: none;
+            }
         }
+    }
+}
+@media screen and (max-width: 375px) {
+    .banner_login{
+        .login{
+            height: 60vh;
+        }
+    h1{
+font-size: 2.3rem;
+        }   
     }
 }

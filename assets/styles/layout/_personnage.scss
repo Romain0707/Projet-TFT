@@ -22,3 +22,21 @@
         justify-content: center;
     }
 }
+@media screen and (max-width: 375px) {
+    .banner_personnage{
+        .personnage{
+            h1{
+                font-size: 2.2rem;
+            }
+        }
+    }
+}
+@media screen and (max-width: 768px) {
+    .banner_personnage{
+        .personnage{
+            h1{
+                font-size: 2.5rem;
+            }
+        }
+    }
+}

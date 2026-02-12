@@ -1,7 +1,7 @@
 @use '../abstracts/mixins' as m;
 @use '../abstracts/variables' as v;
 
-.btn {
+btn {
     --btn-color: black;
     --btn-color: white;
     @include m.pixelBorder(5px, var(--btn-color), var(--btn-color));

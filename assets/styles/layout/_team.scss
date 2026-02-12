@@ -1,5 +1,49 @@
+@use '../abstracts/mixins' as m;
+@use '../abstracts/variables' as v;
 .banner_team{
     background: center/cover no-repeat fixed url(../../../public/img/team/bg_team.jpg);
+    .container{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        h2{
+            text-align: center;
+            color: white;
+            font-family: 'medievalsharp';
+            font-size: 3rem;
+        }
+        .btn_team{
+            --button-background: #DAD4A6;
+            @include m.step2v2(4px, black, var(--button-background));
+            height: 20px;
+            padding-inline: 3rem;
+            appearance: none;
+            border: none;
+            font-family: 'medievalsharp';
+            background-color: var(--button-background);
+            transition: all 0.3s ease;
+
+        }
+        .btn_team:hover{
+            --button-background: #beb35a;
+        }
+        .team-name{
+                @include m.step2v2(4px, black, rgb(232, 240, 254));
+                    background-color: rgb(232, 240, 254);
+                    height: 30px;
+                    width: 250px;
+                    appearance: none;
+                    border: none;
+                    font-family: 'medievalsharp';
+                    &:nth-child(1) {
+                        text-transform: capitalize;
+                        }
+                    &:focus {
+                        outline: none;
+                        }
+                
+        }
+    }
     #hero{
         height: 100vh;
         display: flex;
@@ -27,6 +71,7 @@
         align-items: center;
         gap: 50px;
 
+
         .character-team {
             width: 358px;
             height: 358px;
@@ -36,20 +81,8 @@
             background-size: cover;
         }
 
-            h2{
-                text-align: center;
-                color: white;
-                font-family: 'medievalsharp';
-        }
-        .team-name{
-                width: 250px;
-                height: 40px;
-                border-radius: 10px;
-                color: white;
-                background-color:#D5D8D1;
-                text-align: center;
-                font-family: 'medievalsharp';
-        }
+            
+        
         
     }
     .filters-button{
@@ -101,4 +134,45 @@
 
 .character-team.selected {
     filter: brightness(110%) drop-shadow(0 0 20px orange);
+}
+
+@media screen and (max-width: 768px) {
+    .banner_team{
+        #hero{
+            h1{
+                font-size: 3rem;
+            }
+        }
+    }
+    .team-container{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 50px;
+        transform:scale(0.6);
+    }
+}
+
+@media screen and (max-width: 375px) {
+    .banner_team{
+        .container__character-team {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            gap: 0rem;
+        }
+        #hero{
+                height: 60vh;
+            h1{
+                font-size: 2rem;
+            }
+        }
+    }
+    .team-container{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 50px;
+        transform:scale(0.7);
+    }
 }
