@@ -1,24 +1,40 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello PlayController!{% endblock %}
+{% block title %}Jouer !{% endblock %}
 
 {% block body %}
 <div class='banner_play'>
     <div class='container_play'>
         <div class='class_name'>
-            <h1>{{ team.name }}</h1>
+            {% if team|length != 0 %}
+                <h1>{{ team.name }}</h1>
+            {% endif %}
         </div>
         <div class='team'>
-            {% for teamActive in team.personnage %}
-                <div class='perso_name'>
-                    <p>{{ teamActive.name }}</p>
-                    <img src="{{ teamActive.imageUrl }}" alt="">
+            {% if team|length != 0 %}
+                {% for teamActive in team.personnage %}
+                    <div class="characters-team-card">
+                        <div class="characters">
+                            <img src="{{asset('img/') ~ teamActive.imageUrl }}" alt="Image du personnage" class="characters_spritesheet pixelart">
+                        </div>
+                        <div class='perso_name'>
+                            <p>{{ teamActive.name }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% if team|length == 0 %}
+                <div id="create-team">
+                    <h2>Créer une team</h2>
+                    <a href="{{path('app_team')}}"><div class="croce"></div></a>
                 </div>
-            {% endfor %}
+            {% endif %}
         </div>
-        <div class='play'>
-            <a href="{{path('game_placement_ui')}}">Jouer</a>
-        </div>
+        {% if team|length != 0 %}
+            <div class='play'>
+                <a href="{{path('game_placement_ui')}}">Jouer</a>
+            </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

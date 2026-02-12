@@ -58,7 +58,6 @@
                         border-radius: 50%;
                         
                         img {
-                            background-color: white;
                             border-radius: 50%;
                             width: 100%;
                             height: 100%;
@@ -179,6 +178,49 @@
         }
     }
 
+    #create-team {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        a {
+            display: inline-block;
+            padding: 20px;
+            background-color: #DAD4A6;
+            border: 4px solid #686868;
+            margin-bottom: 1rem;
+
+            .croce {
+                position: relative;
+                height: 60px;
+                width: 60px;
+
+                &::after {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    content: "";
+                    background-color: #686868;
+                    width: 60px;
+                    height: 15px;
+                }
+
+                &::before {
+                    position: absolute;
+                    top: 38%;
+                    transform-origin: center;
+                    transform: rotate(90deg);
+                    content: "";
+                    background-color: #686868;
+                    width: 60px;
+                    height: 15px;
+                    
+                }
+            }
+        }
+    }
+
     #teams {
         .container {
             width: 100%;
@@ -188,7 +230,8 @@
 
             h2 {
                 color: #DAD4A6;
-                -webkit-text-stroke: 1px #afa870; 
+                -webkit-text-stroke: 0.15em #686868; 
+                paint-order: stroke fill;
                 font-size: 40px;
                 font-family: 'medievalsharp';
             }
@@ -206,28 +249,51 @@
 
                     .team-heroes-container {
                         display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        gap: 10px;
+                        align-items: flex-end;
+                        gap: 30px;
                         margin-right: 3rem;
                     
 
                         .team-heroes {
+                            position: relative;
                             display: flex;
                             flex-direction: column;
                             align-items: center;
+                            width: 75px;
+                            height: 100%;
 
-                            img {
-                                width: 75px;
-                                height: 75px;
-                                border-radius: 50%;
-                                object-fit: cover;
+                            .characters {
+                                position: absolute;
+                                top: -165%;
+                                left: -150%;
+                                width: calc(100px * 3);
+                                height: calc(100px * 3);
+                                overflow: hidden;
+                                pointer-events: none;
+
+                                img {
+                                    image-rendering: pixelated;
+                                    image-rendering: crisp-edges;
+                                    animation: moveSpritesheet 1s steps(6) infinite;
+                                    width: calc(600px * 3);
+                                    position: absolute;
+                                    pointer-events: none;
+                                }
                             }
+
+                            p {
+                                margin-top: 55px;
+                                margin-bottom: 0;
+                                position: relative;
+                                font-family: 'medievalsharp';
+                            }
+
                         }
                     }   
                 }
 
                 .team-name {
+                    font-family: 'medievalsharp';
                     margin-inline: auto;
                 }
 

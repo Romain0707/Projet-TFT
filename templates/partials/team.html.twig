@@ -3,11 +3,9 @@
         <div class="team-heroes-container">
             {% for personnage in teams.personnage %}
                 <div class="team-heroes">
-                    <img 
-                        src="{{ asset('img/personnage/archer.png') }}" 
-                        alt="Avatar"
-                        class="avatar"
-                    >
+                    <div class="characters">
+                        <img src="{{ asset('img/' ~ personnage.imageUrl) }}"  alt="Avatar" class="avatar">
+                    </div>
 
                     <p>{{ personnage.name }}</p>
                 </div>

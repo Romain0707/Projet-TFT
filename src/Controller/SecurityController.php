@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\RegisterFormType;
+use App\Form\RegisterType;
+use Vich\UploaderBundle\Entity\File;
+
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,23 +42,23 @@ class SecurityController extends AbstractController
     {
         $user = new User();
 
-        $form = $this->createForm(RegisterFormType::class, $user);
+        $form = $this->createForm(RegisterType::class, $user);
 
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
             $user->setRoles(['ROLE_USER']);
+            $user->setImageName('default-avatar.png');
+            $user->setImageSize('144020');
             $user->setPassword($passwordEncoder->hashPassword($user,$form->get('password')->getData()));
             
             $entityManager->persist($user);
 
             $entityManager->flush();
 
-            $this->addFlash('succes', 'Vous vous êtes inscrit avec succès !');
-
-            return $this->redirectToRoute('home');
-  
+            return $this->redirectToRoute('app_accueil');
         }
+
         return $this->render('security/register.html.twig', [
             'form' => $form->createView(),
         ]);      

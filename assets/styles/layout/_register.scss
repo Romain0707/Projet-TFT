@@ -1,19 +1,87 @@
-.banner_register{
-    background: center/cover no-repeat fixed url(../../../public/img/login/bg_login.jpg);
-    margin: 0;
-    .container{
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        
-        .form-input{
-            height: 40px;
-            width: 500px;
-            border-radius: 10px;
-            background-color:#DAD4A6;
-            display: flex;
+@use '../abstracts/mixins' as m;
+@use '../abstracts/variables' as v;
 
+
+.banner_register{
+    background: center/cover no-repeat fixed url(../../../public/img/login/bg_login.png);
+    height: 100vh;
+    margin: 0;
+
+    #inscriptionpage {
+        height: 100%;
+
+        .container {
+            height: 100%;
+            .container-form {
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                
+                form {
+                    padding: 20px 50px;
+
+                    #register {
+                        margin: 50px;
+
+                        div {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 0.5rem;
+                            margin-bottom: 1.5rem;
+
+                            label {
+                                font-family: 'medievalsharp';
+                                color: #DAD4A6
+                            }
+
+                            input {
+                                @include m.step2v2(4px, black, rgb(232, 240, 254));
+                                background-color: rgb(232, 240, 254);
+                                height: 30px;
+                                width: 250px;
+                                appearance: none;
+                                border: none;
+                                font-family: 'medievalsharp';
+
+                                &:nth-child(1) {
+                                    text-transform: capitalize;
+                                }
+                                &:focus {
+                                    outline: none;
+                                }
+                            }
+
+                            button {
+                                --button-background: #DAD4A6;
+                                @include m.step2v2(4px, black, var(--button-background));
+                                height: 20px;
+                                padding-inline: 3rem;
+                                appearance: none;
+                                border: none;
+                                font-family: 'medievalsharp';
+                                background-color: var(--button-background);
+                                transition: all 0.3s ease;
+
+                                &:hover {
+                                    --button-background: #beb35a;
+                                }
+                            }
+
+                            ul {
+                                padding-left: 0;
+
+                                #register_username_error1 {
+                                    list-style-type: none;
+                                    color: rgb(248, 61, 61);
+                                    font-family: 'medievalsharp';
+                                    padding-left: 0;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

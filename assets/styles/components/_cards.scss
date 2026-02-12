@@ -14,9 +14,11 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
+    pointer-events: all;
+
 
     .card_personnage_name {
-        margin-top: 36px;
+        padding-top: 36px;
         font-size: 1.5rem;
         line-height: 0;
         text-align: center;
@@ -34,21 +36,29 @@
     }
 
     .card_personnage_img {
-        width: 100%;
-        height: 120px;
+        position: absolute;
+        top: -25%;
+        left: -15%;
+        width: calc(100px * 4.5);
+        height: calc(100px * 4.5);
+        overflow: hidden;
+        pointer-events: none;
 
         img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            object-position: center;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            animation: moveSpritesheet 1s steps(6) infinite;
+            width: calc(600px * 4.5);
+            position: absolute;
+            pointer-events: none;
         }
     }
 
     .card_personnage_stats {
             width: 100%;
             height: 150px;
-            position: relative;
+            position: absolute;
+            bottom: 7%;
         
         .stats_perso {
             width: 100%;
@@ -83,4 +93,13 @@
             }
         }
     }
+}
+
+@keyframes moveSpritesheet {
+   from {
+      transform: translate3d(0px,0,0)
+   }
+   to {
+      transform: translate3d(-100%,0,0)
+   }
 }

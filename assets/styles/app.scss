@@ -1,3 +1,6 @@
+// @use '/abstracts/mixins' as m;
+// @use '/abstracts/variables' as v;
+
 
 /*BASE*/
 @use 'base/fonts';
@@ -6,6 +9,7 @@
 /*abstracts*/
 
 /*components*/
+@use 'components/btn';
 @use 'components/cards';
 
 

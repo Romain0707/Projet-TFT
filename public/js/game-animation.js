@@ -3,11 +3,11 @@
 //  - Uses unit spritesheets + per-action animations
 //  - Sprites are 100x100 per frame, frames are horizontal
 //  - Adds ASSET_BASE prefix to JSON paths (fix missing /img/ ...)
+//  - FIX: allow same numeric id in both teams by using uid = `${team}:${id}` everywhere
+//  - ADD: HP bar per unit + floating damage/heal text
 // =====================================================
 
 // ---- Asset path helper ----
-// Everything inside /public is served from "/" (Vite/React default).
-// If your images are in public/img/... then the public URL is "/img/...".
 const ASSET_BASE = '/img/';
 let lastData = null;
 let isPlaying = false;
@@ -20,6 +20,11 @@ function assetUrl(p) {
   if (p.startsWith('/')) return p;
   // prefix relative path
   return ASSET_BASE + p.replace(/^\.?\//, '');
+}
+
+// ---- UID helper (team-scoped ID) ----
+function uidOf(team, id) {
+  return `${team}:${id}`;
 }
 
 // ---- Helpers positions (x,y) -> pixel ----
@@ -39,7 +44,6 @@ const PAUSE_AFTER_HEAL = 180;
 const HIT_DELAY = 250;
 
 function delay(ms) { return sleep(ms * SPEED); }
-
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 // ---- Render board ----
@@ -62,12 +66,48 @@ function renderBoard(w, h) {
 }
 
 // ---- Units state ----
-const unitEls   = new Map(); // id -> root element
-const unitData  = new Map(); // id -> unit json (stats + animations)
-const unitAnim  = new Map(); // id -> { timer, name } (current animation)
+// keyed by uid ("A:53", "B:53", ...)
+const unitEls   = new Map(); // uid -> root element
+const unitData  = new Map(); // uid -> unit json (stats + animations)
+const unitAnim  = new Map(); // uid -> { timer, name } (current animation)
 
 let queue = [];
 let cursor = 0;
+
+// ---- HP + Float text helpers ----
+function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
+
+function updateHpBar(uid, hpValue) {
+  const el = unitEls.get(uid);
+  if (!el) return;
+
+  const maxHp = parseInt(el.dataset.maxHp || '1', 10) || 1;
+  const hp = clamp(parseInt(String(hpValue ?? 0), 10) || 0, 0, maxHp);
+
+  el.dataset.hp = String(hp);
+
+  const fill = el.querySelector('.hpFill');
+  if (!fill) return;
+
+  const pct = (hp / maxHp) * 100;
+  fill.style.width = `${pct}%`;
+
+  // subtle "low hp" emphasis (optional)
+  if (pct <= 30) fill.style.filter = 'saturate(1.2) brightness(1.05)';
+  else fill.style.filter = '';
+}
+
+function popFloatText(uid, text, kind = 'dmg') {
+  const el = unitEls.get(uid);
+  if (!el) return;
+
+  const t = document.createElement('div');
+  t.className = `floatText ${kind}`;
+  t.textContent = text;
+
+  el.appendChild(t);
+  setTimeout(() => t.remove(), 750);
+}
 
 // ---- Animation helpers ----
 function getAnimDef(u, animName) {
@@ -83,10 +123,10 @@ function getAnimDurationMs(u, animName) {
   return Math.max(1, Math.round((frames / fps) * 1000));
 }
 
-function stopAnim(unitId) {
-  const st = unitAnim.get(unitId);
+function stopAnim(uid) {
+  const st = unitAnim.get(uid);
   if (st?.timer) clearInterval(st.timer);
-  unitAnim.delete(unitId);
+  unitAnim.delete(uid);
 }
 
 // Frames are horizontal. We shift X by frameWidth pixels.
@@ -94,27 +134,27 @@ function setSpriteFrame(spriteEl, frameIndex, frameWpx) {
   spriteEl.style.backgroundPosition = `${-frameIndex * frameWpx}px 0px`;
 }
 
-function setAnim(unitId, animName, { loop = true, force = false } = {}) {
-  const root = unitEls.get(unitId);
-  const u = unitData.get(unitId);
+function setAnim(uid, animName, { loop = true, force = false } = {}) {
+  const root = unitEls.get(uid);
+  const u = unitData.get(uid);
   if (!root || !u) return;
 
   const sprite = root.querySelector('.sprite');
   if (!sprite) return;
 
   // If already playing same anim, do nothing (unless forced)
-  const current = unitAnim.get(unitId);
+  const current = unitAnim.get(uid);
   if (!force && current?.name === animName) return;
 
   const def = getAnimDef(u, animName);
 
   // fallback: if anim missing, try idle
   if (!def) {
-    if (animName !== 'idle') return setAnim(unitId, 'idle', { loop: true, force: true });
+    if (animName !== 'idle') return setAnim(uid, 'idle', { loop: true, force: true });
     return;
   }
 
-  stopAnim(unitId);
+  stopAnim(uid);
 
   const fps = def.fps || 10;
   const frames = def.frames || 1;
@@ -136,7 +176,7 @@ function setAnim(unitId, animName, { loop = true, force = false } = {}) {
 
   // Single frame => nothing to animate
   if (frames <= 1) {
-    unitAnim.set(unitId, { timer: null, name: animName });
+    unitAnim.set(uid, { timer: null, name: animName });
     return;
   }
 
@@ -153,8 +193,8 @@ function setAnim(unitId, animName, { loop = true, force = false } = {}) {
         // stop on last frame
         i = frames - 1;
         setSpriteFrame(sprite, i, frameW);
-        stopAnim(unitId);
-        unitAnim.set(unitId, { timer: null, name: animName });
+        stopAnim(uid);
+        unitAnim.set(uid, { timer: null, name: animName });
         return;
       }
     }
@@ -162,7 +202,7 @@ function setAnim(unitId, animName, { loop = true, force = false } = {}) {
     setSpriteFrame(sprite, i, frameW);
   }, interval);
 
-  unitAnim.set(unitId, { timer, name: animName });
+  unitAnim.set(uid, { timer, name: animName });
 }
 
 // ---- Create & spawn units ----
@@ -174,11 +214,12 @@ function spawnUnits(units) {
   unitAnim.clear();
 
   for (const u of units) {
-    unitData.set(u.id, u);
+    const uid = uidOf(u.team, u.id);
+    unitData.set(uid, u);
 
     const root = document.createElement('div');
     root.className = `unit ${u.team === 'A' ? 'teamA' : 'teamB'}`;
-    root.dataset.id = String(u.id);
+    root.dataset.uid = uid;
 
     // sprite container
     const sprite = document.createElement('div');
@@ -191,14 +232,29 @@ function spawnUnits(units) {
     label.textContent = u.name;
     root.appendChild(label);
 
+    // HP bar
+    const hpBar = document.createElement('div');
+    hpBar.className = 'hpBar';
+    const hpFill = document.createElement('div');
+    hpFill.className = 'hpFill';
+    hpBar.appendChild(hpFill);
+    root.appendChild(hpBar);
+
+    // store max hp + current hp
+    root.dataset.maxHp = String(u.hp ?? 1);
+    root.dataset.hp = String(u.hp ?? 1);
+
     placeUnit(root, u.x, u.y, true);
 
     layer.appendChild(root);
-    unitEls.set(u.id, root);
+    unitEls.set(uid, root);
+
+    // init fill
+    updateHpBar(uid, u.hp);
 
     // start idle using either "idle" anim or image_url
     if (u.animations?.idle) {
-      setAnim(u.id, 'idle', { loop: true, force: true });
+      setAnim(uid, 'idle', { loop: true, force: true });
     } else {
       const frameW = parseInt(root.dataset.spriteW || '100', 10);
       const frameH = parseInt(root.dataset.spriteH || '100', 10);
@@ -267,18 +323,18 @@ async function step() {
   const action = queue[cursor++];
 
   if (action.type === 'move') {
-
-    const el = unitEls.get(action.unit_id);
+    const uid = uidOf(action.team, action.unit_id);
+    const el = unitEls.get(uid);
     const duration = moveDuration(action.from, action.to);
+
     if (el) {
-      setAnim(action.unit_id, 'walk', { loop: true });
+      setAnim(uid, 'walk', { loop: true });
       placeUnit(el, action.to.x, action.to.y);
 
-      // match your CSS transition on .unit (520ms)
       await delay(duration);
       await delay(PAUSE_AFTER_MOVE);
 
-      setAnim(action.unit_id, 'idle', { loop: true });
+      setAnim(uid, 'idle', { loop: true });
     } else {
       await sleep(220);
     }
@@ -286,11 +342,14 @@ async function step() {
   }
 
   if (action.type === 'attack') {
+    const aUid = uidOf(action.attacker_team, action.attacker_id);
+    const tUid = uidOf(action.target_team, action.target_id);
 
-    const aEl = unitEls.get(action.attacker_id);
-    const tEl = unitEls.get(action.target_id);
-        // Si l'attaquant est le wizard -> effet "glaçons" sur la cible
-    const attackerUnit = unitData.get(action.attacker_id);
+    const aEl = unitEls.get(aUid);
+    const tEl = unitEls.get(tUid);
+
+    // Si l'attaquant est le wizard -> effet "glaçons" sur la cible
+    const attackerUnit = unitData.get(aUid);
 
     // ❄️ Wizard effect sur la cellule cible (parfait même en diagonale)
     if (attackerUnit?.image_url?.includes('Wizard') && action.target_position) {
@@ -304,13 +363,13 @@ async function step() {
     }
 
     if (aEl) {
-      setAnim(action.attacker_id, 'attack', { loop: false, force: true });
-      setTimeout(() => setAnim(action.attacker_id, 'idle', { loop: true, force: true }),
-        getAnimDurationMs(unitData.get(action.attacker_id), 'attack')
+      setAnim(aUid, 'attack', { loop: false, force: true });
+      setTimeout(
+        () => setAnim(aUid, 'idle', { loop: true, force: true }),
+        getAnimDurationMs(unitData.get(aUid), 'attack')
       );
     }
 
-    
     if (tEl) {
       await sleep(HIT_DELAY);
 
@@ -318,18 +377,29 @@ async function step() {
       tEl.classList.add('hit');
       setTimeout(() => tEl.classList.remove('hit'), 260);
 
+      // popup dmg / miss
+      if (typeof action.damage === 'number') {
+        if (action.damage <= 0) popFloatText(tUid, '0', 'miss');
+        else popFloatText(tUid, `-${action.damage}`, 'dmg');
+      }
+
+      // update hp bar (JSON)
+      if (typeof action.target_hp === 'number') {
+        updateHpBar(tUid, action.target_hp);
+      }
+
       if (!action.dead) {
-        setAnim(action.target_id, 'hurt', { loop: false, force: true });
+        setAnim(tUid, 'hurt', { loop: false, force: true });
 
         setTimeout(
-          () => setAnim(action.target_id, 'idle', { loop: true, force: true }),
-          getAnimDurationMs(unitData.get(action.target_id), 'hurt')
+          () => setAnim(tUid, 'idle', { loop: true, force: true }),
+          getAnimDurationMs(unitData.get(tUid), 'hurt')
         );
       } else {
         // mort déclenchée AU moment de l'impact (pas avant)
-        setAnim(action.target_id, 'dead', { loop: false, force: true });
+        setAnim(tUid, 'dead', { loop: false, force: true });
 
-        const deadMs = getAnimDurationMs(unitData.get(action.target_id), 'dead') || 450;
+        const deadMs = getAnimDurationMs(unitData.get(tUid), 'dead') || 450;
         await sleep(deadMs);
 
         // optional fade/shrink after death anim
@@ -338,10 +408,10 @@ async function step() {
         tEl.style.transform += ' translateZ(-10px) scale(0.6)';
         await sleep(340);
 
-        stopAnim(action.target_id);
+        stopAnim(tUid);
         tEl.remove();
-        unitEls.delete(action.target_id);
-        unitData.delete(action.target_id);
+        unitEls.delete(tUid);
+        unitData.delete(tUid);
       }
     }
 
@@ -351,40 +421,48 @@ async function step() {
   }
 
   if (action.type === 'heal') {
-
     if (action.target_position) {
-      playHealAuraAtCell(
-        action.target_position.x,
-        action.target_position.y,
-        {
-          frames: 4,
-          fps: 10,
-          scale: 3,
-          durationMs: 520 * SPEED,
-          anchor: 'center',
-          offsetX: -15,
-          offsetY: -85
-        }
-      );
+      playHealAuraAtCell(action.target_position.x, action.target_position.y, {
+        frames: 4,
+        fps: 10,
+        scale: 3,
+        durationMs: 520 * SPEED,
+        anchor: 'center',
+        offsetX: -15,
+        offsetY: -85
+      });
     }
 
-    const hEl = unitEls.get(action.healer_id);
+    const hUid = uidOf(action.healer_team, action.healer_id);
+    const tUid = uidOf(action.target_team, action.target_id);
+
+    const hEl = unitEls.get(hUid);
     if (hEl) {
-      setAnim(action.healer_id, 'heal', { loop: false, force: true });
-      const healMs = getAnimDurationMs(unitData.get(action.healer_id), 'heal') || 500;
+      setAnim(hUid, 'heal', { loop: false, force: true });
+      const healMs = getAnimDurationMs(unitData.get(hUid), 'heal') || 500;
       await sleep(healMs);
-      setAnim(action.healer_id, 'idle', { loop: true, force: true });
+      setAnim(hUid, 'idle', { loop: true, force: true });
     } else {
       await sleep(220);
     }
 
-    const tEl = unitEls.get(action.target_id);
+    const tEl = unitEls.get(tUid);
     if (tEl) {
       tEl.classList.add('healFx');
       setTimeout(() => tEl.classList.remove('healFx'), 260);
-    }
-    await delay(PAUSE_AFTER_HEAL);
 
+      // popup heal
+      if (typeof action.healing === 'number') {
+        popFloatText(tUid, `+${action.healing}`, 'heal');
+      }
+
+      // update hp bar (JSON)
+      if (typeof action.target_hp === 'number') {
+        updateHpBar(tUid, action.target_hp);
+      }
+    }
+
+    await delay(PAUSE_AFTER_HEAL);
     return true;
   }
 
@@ -397,12 +475,8 @@ async function step() {
 function moveDuration(from, to) {
   const dx = Math.abs(from.x - to.x);
   const dy = Math.abs(from.y - to.y);
-  const steps = dx + dy; 
+  const steps = dx + dy;
   return 600 + steps * 300; // ms
-}
-
-async function playAll() {
-  while (await step()) { /* loop */ }
 }
 
 // ---- Boot ----
@@ -439,8 +513,6 @@ async function init() {
 
     queue = buildQueue(data.rounds);
     cursor = 0;
-
-    // status.textContent = `Winner: ${data.winner}`;
   } catch (e) {
     console.error(e);
     if (status) status.textContent = `Erreur: ${e.message}`;
@@ -466,9 +538,7 @@ function getLayerScreenOrigin(layerEl) {
 }
 
 /**
- * Aura animée 4 frames (100x100) sur une unité.
- * - anchoredTo: "feet" (par défaut) ou "center"
- * - loop: false => joue 1 fois puis disparaît
+ * Aura animée 4 frames (100x100) sur une cellule.
  */
 function playHealAuraAtCell(x, y, {
   frames = 4,
@@ -478,8 +548,8 @@ function playHealAuraAtCell(x, y, {
   scale = 1.6,
   z = 28,
   anchor = 'center',
-  offsetX = -15,   // ← ton réglage
-  offsetY = -85,   // ← ton réglage
+  offsetX = -15,
+  offsetY = -85,
 } = {}) {
   const layer = document.getElementById('effects');
   if (!layer) return;
@@ -498,7 +568,6 @@ function playHealAuraAtCell(x, y, {
 
   layer.appendChild(eff);
 
-  // --- Position basée sur la GRILLE (exacte) ---
   const { left, top, cell } = cellToPx(x, y);
 
   const cx = left + cell / 2 + offsetX;
@@ -517,7 +586,6 @@ function playHealAuraAtCell(x, y, {
      rotateY(calc(-1 * var(--yaw)))
      scale(${scale})`;
 
-  // --- Animation frames ---
   let frame = 0;
   const interval = Math.max(16, Math.round(1000 / fps));
   const timer = setInterval(() => {
@@ -525,22 +593,17 @@ function playHealAuraAtCell(x, y, {
     frame = (frame + 1) % frames;
   }, interval);
 
-  // petit pop-in magique
   eff.animate(
     [
       {
         opacity: 0,
-        transform: eff.style.transform.replace(
-          `scale(${scale})`,
-          `scale(${scale * 0.85})`
-        )
+        transform: eff.style.transform.replace(`scale(${scale})`, `scale(${scale * 0.85})`)
       },
       { opacity: 1, transform: eff.style.transform }
     ],
     { duration: 120, easing: 'ease-out', fill: 'forwards' }
   );
 
-  // cleanup
   setTimeout(() => {
     clearInterval(timer);
     eff.style.transition = 'opacity 160ms ease';
@@ -555,8 +618,8 @@ function playWizardImpactAtCell(x, y, {
   frameSize = 100,
   durationMs = 520,
   scale = 3,
-  z = 30,                // profondeur
-  anchor = 'center',     // 'center' | 'feet'
+  z = 30,
+  anchor = 'center',
 } = {}) {
   const layer = document.getElementById('effects');
   if (!layer) return;
@@ -574,28 +637,23 @@ function playWizardImpactAtCell(x, y, {
 
   layer.appendChild(eff);
 
-  // --- Convert cell (x,y) -> board pixels (same logic as units) ---
   const { left, top, cell } = cellToPx(x, y);
 
   const OFFSET_Y = -95;
   const OFFSET_X = -5;
-  // center = milieu de la tile ; feet = plus bas (style impact au sol)
+
   const cx = (left + cell / 2) + OFFSET_X;
   const cy = ((anchor === 'feet') ? (top + cell * 0.78) : (top + cell / 2)) + OFFSET_Y;
 
-  // Place l’effet au centre choisi
   const tx = cx - frameSize / 2;
   const ty = cy - frameSize / 2;
 
-  // IMPORTANT: effects-layer est incliné comme le board,
-  // donc on contre-rotate pour que l'effet reste face caméra (billboard)
   eff.style.transform =
     `translate3d(${tx}px, ${ty}px, ${z}px) ` +
     `rotateX(calc(-1 * var(--tilt))) ` +
     `rotateY(calc(-1 * var(--yaw))) ` +
     `scale(${scale})`;
 
-  // --- frame animation ---
   let frame = 0;
   const interval = Math.max(16, Math.round(1000 / fps));
   const timer = setInterval(() => {
@@ -603,7 +661,6 @@ function playWizardImpactAtCell(x, y, {
     frame = (frame + 1) % frames;
   }, interval);
 
-  // petit pop-in
   eff.animate(
     [
       { opacity: 0, transform: eff.style.transform.replace(`scale(${scale})`, `scale(${scale * 0.85})`) },
@@ -634,10 +691,8 @@ function showResult(data) {
   const banner = document.getElementById('resultBanner');
   if (!banner || !data) return;
 
-  // Team A name comes from JSON teams.A.name
   const teamAName = data?.teams?.A?.name;
   const winner = data?.winner;
-
   const win = (winner && teamAName && winner === teamAName);
 
   banner.hidden = false;
@@ -656,8 +711,8 @@ function hideResult() {
 
 function resetCombat() {
   if (!lastData) return;
-  // stop animations timers
-  for (const id of unitAnim.keys()) stopAnim(id);
+
+  for (const uid of unitAnim.keys()) stopAnim(uid);
 
   clearLayers();
   renderBoard(lastData.board.width, lastData.board.height);
@@ -687,7 +742,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (btnPlay) btnPlay.addEventListener('click', playAll);
   if (btnStep) btnStep.addEventListener('click', step);
-  if (btnReplay) btnReplay.addEventListener('click', () => {
-    resetCombat();
-  });
+  if (btnReplay) btnReplay.addEventListener('click', () => resetCombat());
 });
