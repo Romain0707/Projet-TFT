@@ -8,7 +8,7 @@
   "build/images/bg_placement.png": "/build/images/bg_placement.e0f0c2de.png",
   "build/images/fond-parchemin.png": "/build/images/fond-parchemin.c501e09e.png",
   "build/images/avatar-cadre.png": "/build/images/avatar-cadre.0f06f73d.png",
-  "build/images/bg_team.png": "/build/images/bg_team.2f656d46.png",
+  "build/images/bg_team.png": "/build/images/bg_team.dc54b02e.png",
   "build/images/banner.jpg": "/build/images/banner.fbce0ba3.jpg",
   "build/images/bg_login.jpg": "/build/images/bg_login.ada15bba.jpg",
   "build/images/bg_play.jpg": "/build/images/bg_play.6bf3280b.jpg",
@@ -18,9 +18,5 @@
   "build/images/bg_parchemin.jpg": "/build/images/bg_parchemin.1ce3114c.jpg",
   "build/fonts/Jacquard24-Regular.ttf": "/build/fonts/Jacquard24-Regular.ae058d66.ttf",
   "build/fonts/MedievalSharp-Regular.ttf": "/build/fonts/MedievalSharp-Regular.5db53ecb.ttf",
-  "build/images/bgTFP.jpg": "/build/images/bgTFP.e66eea5e.jpg",
-  "build/images/BG_team.png": "/build/images/BG_team.af0f4ad9.png",
-  "build/images/bg_login.png": "/build/images/bg_login.980d79f4.png",
-  "build/images/bannerPersonnage.png": "/build/images/bannerPersonnage.4e104e89.png",
-  "build/images/banner.png": "/build/images/banner.a808a2b1.png"
+  "build/images/bgTFP.jpg": "/build/images/bgTFP.e66eea5e.jpg"
 }
