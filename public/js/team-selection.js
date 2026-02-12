@@ -39,27 +39,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (target && target.classList.contains('card_personnage') && selectedTeamSlot) {
-            // Si une équipe est déjà sélectionnée, on met à jour son contenu avec le nouveau personnage
             const characterId = target.dataset.characterid;
 
-            // Vérifier si un personnage est déjà sélectionné dans cette équipe
             const existingCharacterId = selectedTeamSlot.dataset.characterid;
-
-            // Si un personnage était déjà dans cette équipe, on le retire du tableau selectedCharacters
             if (existingCharacterId) {
                 const index = selectedCharacters.indexOf(existingCharacterId);
-                if (index !== -1) {
-                    selectedCharacters.splice(index, 1);  // Supprimer l'ancien personnage
-                }
+                if (index !== -1) selectedCharacters.splice(index, 1);
             }
 
-            // Mettre à jour l'élément du DOM avec le nouveau personnage
-            selectedTeamSlot.innerHTML = target.innerHTML;
-            selectedTeamSlot.dataset.characterid = characterId; // Mettre à jour l'ID du personnage dans l'élément
+            // Nettoie le slot
+            selectedTeamSlot.innerHTML = "";
 
-            // Ajouter le nouveau personnage au tableau selectedCharacters
+            // Clone la carte complète (avec sa classe card_personnage)
+            const cloned = target.cloneNode(true);
+
+            // (optionnel) si tu ne veux pas qu'elle garde certains attributs/ids, ajuste ici
+            selectedTeamSlot.appendChild(cloned);
+
+            selectedTeamSlot.dataset.characterid = characterId;
             selectedCharacters.push(characterId);
-            console.log("Selected Characters:", selectedCharacters);
         }
     });
 

@@ -7,8 +7,9 @@
         align-items: center;
             h1{
                 color: #DAD4A6;
-                -webkit-text-stroke: 1px #686868; 
-                font-size: 70px;
+                -webkit-text-stroke: 0.15em #686868; 
+                paint-order: stroke fill;
+                font-size: 4.375rem;
                 font-family: 'medievalsharp';
                 text-align: center;
         }

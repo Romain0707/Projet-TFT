@@ -58,7 +58,6 @@
                         border-radius: 50%;
                         
                         img {
-                            background-color: white;
                             border-radius: 50%;
                             width: 100%;
                             height: 100%;
@@ -187,9 +186,8 @@
         a {
             display: inline-block;
             padding: 20px;
-            border-radius: 50%;
-            background-color: #E5CEA3;
-            border: 4px solid #25130A;
+            background-color: #DAD4A6;
+            border: 4px solid #686868;
             margin-bottom: 1rem;
 
             .croce {
@@ -203,7 +201,7 @@
                     left: 50%;
                     transform: translate(-50%, -50%);
                     content: "";
-                    background-color: #25130A;
+                    background-color: #686868;
                     width: 60px;
                     height: 15px;
                 }
@@ -214,7 +212,7 @@
                     transform-origin: center;
                     transform: rotate(90deg);
                     content: "";
-                    background-color: #25130A;
+                    background-color: #686868;
                     width: 60px;
                     height: 15px;
                     
@@ -232,7 +230,8 @@
 
             h2 {
                 color: #DAD4A6;
-                -webkit-text-stroke: 1px #afa870; 
+                -webkit-text-stroke: 0.15em #686868; 
+                paint-order: stroke fill;
                 font-size: 40px;
                 font-family: 'medievalsharp';
             }

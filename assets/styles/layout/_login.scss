@@ -11,7 +11,8 @@
             text-align: center;
             margin: 0%;
             color: #DAD4A6;
-            -webkit-text-stroke: 1px #686868; 
+            -webkit-text-stroke: 0.15em #686868;
+            paint-order: stroke fill;
             font-size: 70px;
             font-family: 'medievalsharp';
         }

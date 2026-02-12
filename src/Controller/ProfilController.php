@@ -39,7 +39,6 @@ final class ProfilController extends AbstractController
     #[Route('/profil/team/activate', name: 'activate_team', methods: ['POST'])]
     public function activateTeam(Security $user, Request $request, TeamRepository $teamRepo, EntityManagerInterface $em): JsonResponse
     {
-        // Récupérer les données JSON envoyées
         $data = json_decode($request->getContent(), true);
         $teamId = $data['id'];
 
