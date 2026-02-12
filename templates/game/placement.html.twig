@@ -6,14 +6,21 @@
     <div class="placement-container">
         <h2>Placement des unités</h2>
         <div id="board"></div>
+        <button id="startCombat">Lancer</button>
     </div>
-    <h3>Team A</h3>
-    <div id="teamA-units"></div>
+    <div class="container-team">
+        <div class="first-team">
+            <h3>Team A</h3>
+            <div id="teamA-units"></div>
+        </div>
 
-    <h3>Team B</h3>
-    <div id="teamB-units"></div>
+        <div class="second-team">
+            <h3>Team B</h3>
+            <div id="teamB-units"></div>
+        </div>
+    </div>
 
-    <button id="startCombat">Lancer le combat</button>
+    
 </div>
 <script src="{{ asset('js/placement.js') }}"></script>
 {% endblock %}

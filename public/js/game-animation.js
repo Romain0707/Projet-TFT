@@ -28,12 +28,47 @@ function uidOf(team, id) {
 }
 
 // ---- Helpers positions (x,y) -> pixel ----
+function getBoardMetrics() {
+  const board = document.getElementById('board');
+  if (!board) return { cell: 110, gap: 2 };
+
+  const cellEl = board.querySelector('.cell');
+  const cell = cellEl ? cellEl.getBoundingClientRect().width : 110;
+
+  const st = getComputedStyle(board);
+  // gap peut être "10px 10px" selon les navigateurs → parseFloat prend le 1er
+  const gap = parseFloat(st.columnGap || st.gap) || 2;
+
+  return { cell, gap };
+}
+
 function cellToPx(x, y) {
-  const cell = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cell'));
-  const gap  = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--gap'));
+  const { cell, gap } = getBoardMetrics();
   const left = x * (cell + gap);
   const top  = y * (cell + gap);
   return { left, top, cell, gap };
+}
+
+function updateBoardScale() {
+  const wrap = document.querySelector('#combat .board-wrap');
+  const board = document.getElementById('board');
+  if (!wrap || !board) return;
+
+  const rootStyle = getComputedStyle(document.documentElement);
+  const w = parseFloat(rootStyle.getPropertyValue('--w')) || 1;
+  const h = parseFloat(rootStyle.getPropertyValue('--h')) || 1;
+
+  const { cell, gap } = getBoardMetrics();
+
+  const boardW = w * cell + (w - 1) * gap;
+  const boardH = h * cell + (h - 1) * gap;
+
+  const parent = wrap.parentElement;
+  const availW = parent ? parent.clientWidth : window.innerWidth;
+  const availH = Math.max(240, window.innerHeight * 0.78);
+
+  const scale = Math.min(availW / boardW, availH / boardH, 1);
+  document.documentElement.style.setProperty('--boardScale', scale.toFixed(3));
 }
 
 const SPEED = 1.35; // >1 = plus lent (ex: 1.2, 1.5, 2.0)
@@ -63,7 +98,14 @@ function renderBoard(w, h) {
       board.appendChild(cell);
     }
   }
+
+  requestAnimationFrame(() => updateBoardScale());
 }
+
+window.addEventListener('resize', () => {
+  requestAnimationFrame(() => updateBoardScale());
+});
+
 
 // ---- Units state ----
 // keyed by uid ("A:53", "B:53", ...)
@@ -362,6 +404,18 @@ async function step() {
       });
     }
 
+    if (attackerUnit?.image_url?.includes('Priest') && action.target_position) {
+      playPriestImpactAtCell(action.target_position.x, action.target_position.y, {
+        frames: 5,
+        fps: 12,
+        scale: 3,
+        durationMs: 420 * SPEED,
+        anchor: 'center',
+        offsetX: -5,
+        offsetY: 10
+      });
+    }
+
     if (aEl) {
       setAnim(aUid, 'attack', { loop: false, force: true });
       setTimeout(
@@ -428,8 +482,8 @@ async function step() {
         scale: 3,
         durationMs: 520 * SPEED,
         anchor: 'center',
-        offsetX: -15,
-        offsetY: -85
+        offsetX: -5,
+        offsetY: 10
       });
     }
 
@@ -639,11 +693,75 @@ function playWizardImpactAtCell(x, y, {
 
   const { left, top, cell } = cellToPx(x, y);
 
-  const OFFSET_Y = -95;
+  const OFFSET_Y = -10;
   const OFFSET_X = -5;
 
   const cx = (left + cell / 2) + OFFSET_X;
   const cy = ((anchor === 'feet') ? (top + cell * 0.78) : (top + cell / 2)) + OFFSET_Y;
+
+  const tx = cx - frameSize / 2;
+  const ty = cy - frameSize / 2;
+
+  eff.style.transform =
+    `translate3d(${tx}px, ${ty}px, ${z}px) ` +
+    `rotateX(calc(-1 * var(--tilt))) ` +
+    `rotateY(calc(-1 * var(--yaw))) ` +
+    `scale(${scale})`;
+
+  let frame = 0;
+  const interval = Math.max(16, Math.round(1000 / fps));
+  const timer = setInterval(() => {
+    eff.style.backgroundPosition = `${-frame * frameSize}px 0px`;
+    frame = (frame + 1) % frames;
+  }, interval);
+
+  eff.animate(
+    [
+      { opacity: 0, transform: eff.style.transform.replace(`scale(${scale})`, `scale(${scale * 0.85})`) },
+      { opacity: 1, transform: eff.style.transform }
+    ],
+    { duration: 120, easing: 'ease-out', fill: 'forwards' }
+  );
+
+  setTimeout(() => {
+    clearInterval(timer);
+    eff.style.transition = 'opacity 140ms ease';
+    eff.style.opacity = '0';
+    setTimeout(() => eff.remove(), 160);
+  }, durationMs);
+}
+
+function playPriestImpactAtCell(x, y, {
+  frames = 5,
+  fps = 12,
+  frameSize = 100,
+  durationMs = 520,
+  scale = 3,
+  z = 30,
+  anchor = 'center',
+  offsetX = -5,
+  offsetY = -95,
+} = {}) {
+  const layer = document.getElementById('effects');
+  if (!layer) return;
+
+  const imgUrl = '/img/characters/projectiles/Priest-Attack_effect.png';
+
+  const eff = document.createElement('div');
+  eff.className = 'effect';
+  eff.style.width = `${frameSize}px`;
+  eff.style.height = `${frameSize}px`;
+  eff.style.backgroundImage = `url("${imgUrl}")`;
+  eff.style.backgroundRepeat = 'no-repeat';
+  eff.style.backgroundSize = `${frames * frameSize}px ${frameSize}px`;
+  eff.style.backgroundPosition = `0px 0px`;
+
+  layer.appendChild(eff);
+
+  const { left, top, cell } = cellToPx(x, y);
+
+  const cx = (left + cell / 2) + offsetX;
+  const cy = ((anchor === 'feet') ? (top + cell * 0.78) : (top + cell / 2)) + offsetY;
 
   const tx = cx - frameSize / 2;
   const ty = cy - frameSize / 2;

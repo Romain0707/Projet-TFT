@@ -21,16 +21,16 @@ class TeamVsTeamCombatService
             return [
                 'board' => [
                     'width' => self::BOARD_WIDTH,
-                    'height' => self::BOARD_HEIGHT
+                    'height' => self::BOARD_HEIGHT,
                 ],
                 'teams' => [
                     'A' => ['name' => $teamA->getName()],
-                    'B' => ['name' => $teamB->getName()]
+                    'B' => ['name' => $teamB->getName()],
                 ],
                 'units' => array_merge($this->exportUnits($fightersA), $this->exportUnits($fightersB)),
                 'winner' => count($fightersA) === 0 ? $teamB->getName() : $teamA->getName(),
                 'rounds' => [],
-                'error' => 'Missing placed units for one team'
+                'error' => 'Missing placed units for one team',
             ];
         }
 
@@ -42,16 +42,19 @@ class TeamVsTeamCombatService
         while (!$this->isDefeated($fightersA) && !$this->isDefeated($fightersB)) {
             $roundData = [
                 'round' => $round,
-                'actions' => []
+                'damage_multiplier' => 1 + (int)(($round - 1) / 5) * 2,
+                'actions' => [],
             ];
 
-            $this->turn($fightersA, 'A', $fightersB, 'B', $roundData['actions']);
+            $damageMultiplier = (float)$roundData['damage_multiplier'];
+
+            $this->turn($fightersA, 'A', $fightersB, 'B', $roundData['actions'], $damageMultiplier);
             if ($this->isDefeated($fightersB)) {
                 $rounds[] = $roundData;
                 break;
             }
 
-            $this->turn($fightersB, 'B', $fightersA, 'A', $roundData['actions']);
+            $this->turn($fightersB, 'B', $fightersA, 'A', $roundData['actions'], $damageMultiplier);
             $rounds[] = $roundData;
 
             $round++;
@@ -61,20 +64,19 @@ class TeamVsTeamCombatService
         return [
             'board' => [
                 'width' => self::BOARD_WIDTH,
-                'height' => self::BOARD_HEIGHT
+                'height' => self::BOARD_HEIGHT,
             ],
             'teams' => [
                 'A' => ['name' => $teamA->getName()],
-                'B' => ['name' => $teamB->getName()]
+                'B' => ['name' => $teamB->getName()],
             ],
             'units' => $initialUnits,
             'winner' => $this->isDefeated($fightersA)
                 ? $teamB->getName()
                 : $teamA->getName(),
-            'rounds' => $rounds
+            'rounds' => $rounds,
         ];
     }
-
 
     private function initFighters(Team $team, string $side, array $placements): array
     {
@@ -111,13 +113,12 @@ class TeamVsTeamCombatService
                 'team' => $side,
                 'is_healer' => $isHealer,
                 'image_url' => (string)($perso->getImageUrl() ?? ''),
-                'animations' => $perso->getAnimations() ?? [], // array depuis JSON
+                'animations' => $perso->getAnimations() ?? [],
             ];
         }
 
         return $fighters;
     }
-
 
     private function exportUnits(array $fighters): array
     {
@@ -135,26 +136,28 @@ class TeamVsTeamCombatService
         ], $fighters);
     }
 
-    private function turn(array &$attackers, string $attackerTeam, array &$defenders, string $defenderTeam, array &$actions): void
+    private function turn( array &$attackers, string $attackerTeam,  array &$defenders, string $defenderTeam, array &$actions, float $damageMultiplier ): void 
     {
         $occupied = $this->buildOccupied($attackers, $defenders);
 
         foreach ($attackers as &$attacker) {
-            if ($attacker['hp'] <= 0) continue;
+            if ((int)$attacker['hp'] <= 0) continue;
 
             if (!empty($attacker['is_healer'])) {
-                $this->healAlly($attacker, $attackerTeam, $attackers, $actions, $occupied);
-                continue;
+                $didHeal = $this->healAlly($attacker, $attackerTeam, $attackers, $actions, $occupied);
+                if ($didHeal) {
+                    continue;
+                }
             }
 
             $targetKey = $this->getClosestTarget($attacker, $defenders);
-            if ($targetKey === null) return;
+            if ($targetKey === null) continue; 
 
             $target = &$defenders[$targetKey];
 
             $distance = $this->distance($attacker['position'], $target['position']);
 
-            if ($distance > $attacker['range']) {
+            if ($distance > (int)$attacker['range']) {
                 $oldPos = $attacker['position'];
 
                 $moved = $this->moveTowards($attacker, $target['position'], $occupied);
@@ -166,15 +169,17 @@ class TeamVsTeamCombatService
                         'unit' => (string)$attacker['name'],
                         'team' => $attackerTeam,
                         'from' => $oldPos,
-                        'to' => $attacker['position']
+                        'to' => $attacker['position'],
                     ];
                 }
 
                 $distance = $this->distance($attacker['position'], $target['position']);
             }
 
-            if ($distance <= $attacker['range']) {
-                $damage = max(0, $attacker['attack'] - ($target['defense']));
+            if ($distance <= (int)$attacker['range']) {
+                $baseDamage = max(1, (int)$attacker['attack'] - (int)$target['defense']);
+                $damage = (int) round($baseDamage * $damageMultiplier);
+
                 $target['hp'] -= $damage;
 
                 $actions[] = [
@@ -189,7 +194,7 @@ class TeamVsTeamCombatService
                     'target_position' => $target['position'],
                     'damage' => (int)$damage,
                     'target_hp' => max(0, (int)$target['hp']),
-                    'dead' => $target['hp'] <= 0
+                    'dead' => (int)$target['hp'] <= 0,
                 ];
             }
         }
@@ -201,7 +206,7 @@ class TeamVsTeamCombatService
         $closestKey = null;
 
         foreach ($defenders as $key => $defender) {
-            if ($defender['hp'] <= 0) continue;
+            if ((int)$defender['hp'] <= 0) continue;
 
             $distance = $this->distance($attacker['position'], $defender['position']);
 
@@ -217,6 +222,7 @@ class TeamVsTeamCombatService
     private function moveTowards(array &$attacker, array $targetPos, array &$occupied = []): bool
     {
         $steps = (int)$attacker['move'];
+        $prevPos = $attacker['prev_position'] ?? null;
 
         while ($steps > 0) {
             $cur = $attacker['position'];
@@ -228,34 +234,43 @@ class TeamVsTeamCombatService
                 ['x' => $cur['x'], 'y' => $cur['y'] - 1],
             ];
 
-            usort($candidates, function ($a, $b) use ($targetPos) {
-                return $this->distance($a, $targetPos) <=> $this->distance($b, $targetPos);
-            });
-
-            $moved = false;
-
+            $valid = [];
             foreach ($candidates as $next) {
                 if (!$this->inBounds($next)) continue;
+                if (isset($occupied[$this->posKey($next)])) continue;
+                $valid[] = $next;
+            }
 
-                $key = $this->posKey($next);
-                if (isset($occupied[$key])) continue; 
+            if (!$valid) return false;
 
-                unset($occupied[$this->posKey($cur)]);
-                $occupied[$key] = true;
+            usort($valid, fn($a, $b) => $this->distance($a, $targetPos) <=> $this->distance($b, $targetPos));
 
-                $attacker['position'] = $next;
-                $moved = true;
+            $picked = null;
+            foreach ($valid as $next) {
+                if ($prevPos !== null && $next['x'] === $prevPos['x'] && $next['y'] === $prevPos['y']) {
+                    continue;
+                }
+                $picked = $next;
                 break;
             }
 
-            if (!$moved) return false;
+            if ($picked === null) {
+                $picked = $valid[0];
+            }
+
+            unset($occupied[$this->posKey($cur)]);
+            $occupied[$this->posKey($picked)] = true;
+
+            $prevPos = $cur;
+            $attacker['position'] = $picked;
 
             $steps--;
         }
 
+        $attacker['prev_position'] = $prevPos;
+
         return true;
     }
-
 
     private function posKey(array $pos): string
     {
@@ -291,17 +306,16 @@ class TeamVsTeamCombatService
         return true;
     }
 
-    private function healAlly(array &$healer, string $healerTeam, array &$allies,array &$actions,array &$occupied): void 
+    private function healAlly(array &$healer, string $healerTeam, array &$allies, array &$actions, array &$occupied): bool
     {
         $allyKey = $this->findAllyToHealKey($healer, $allies);
-        if ($allyKey === null) return;
+        if ($allyKey === null) return false;
 
         $ally = &$allies[$allyKey];
 
         $distance = $this->distance($healer['position'], $ally['position']);
 
-        // si trop loin : on bouge vers l'allié
-        if ($distance > $healer['range']) {
+        if ($distance > (int)$healer['range']) {
             $oldPos = $healer['position'];
 
             $moved = $this->moveTowards($healer, $ally['position'], $occupied);
@@ -318,10 +332,9 @@ class TeamVsTeamCombatService
             }
 
             $distance = $this->distance($healer['position'], $ally['position']);
-            if ($distance > $healer['range']) return;
+            if ($distance > (int)$healer['range']) return false;
         }
 
-        // heal
         $healingAmount = (int)$healer['attack'];
         $ally['hp'] = min((int)$ally['hp'] + $healingAmount, (int)$ally['max_hp']);
 
@@ -338,8 +351,9 @@ class TeamVsTeamCombatService
             'healing' => $healingAmount,
             'target_hp' => (int)$ally['hp'],
         ];
-    }
 
+        return true;
+    }
 
     private function findAllyToHealKey(array $healer, array $allies): ?int
     {
@@ -349,13 +363,7 @@ class TeamVsTeamCombatService
         foreach ($allies as $key => $ally) {
             if ((int)$ally['id'] === (int)$healer['id']) continue;
             if ((int)$ally['hp'] <= 0) continue;
-
-            // on heal seulement si pas full life
             if ((int)$ally['hp'] >= (int)$ally['max_hp']) continue;
-
-            // ici, tu peux laisser la distance ou pas (selon ton gameplay)
-            // si tu veux garder la contrainte de portée, garde la condition :
-            // if ($this->distance($healer['position'], $ally['position']) > (int)$healer['range']) continue;
 
             if ((int)$ally['hp'] < $bestHp) {
                 $bestHp = (int)$ally['hp'];
