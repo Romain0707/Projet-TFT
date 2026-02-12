@@ -10,7 +10,15 @@
         <header>
             <div class='container_nav'>
                 <img src="{{asset('img/header/logoTFP.png')}}" alt="logoTFP"> 
-                <ul class='nav-bar'>
+                
+                <!-- Burger Button -->
+                <button class="burger-btn" id="burgerBtn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <ul class='nav-bar' id="navBar">
                     <li><a href="{{path('app_accueil')}}">Accueil</a></li>
                     <li><a href="{{path('app_personnage')}}">Personnage</a></li>
                     {% if is_granted('ROLE_USER')%}
@@ -53,4 +61,5 @@
         </footer>
     </body>
     {{ encore_entry_script_tags('app') }}
+    <script src="{{ asset('js/menu-burger.js') }}"></script>
 </html>
