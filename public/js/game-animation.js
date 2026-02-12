@@ -28,12 +28,47 @@ function uidOf(team, id) {
 }
 
 // ---- Helpers positions (x,y) -> pixel ----
+function getBoardMetrics() {
+  const board = document.getElementById('board');
+  if (!board) return { cell: 110, gap: 2 };
+
+  const cellEl = board.querySelector('.cell');
+  const cell = cellEl ? cellEl.getBoundingClientRect().width : 110;
+
+  const st = getComputedStyle(board);
+  // gap peut être "10px 10px" selon les navigateurs → parseFloat prend le 1er
+  const gap = parseFloat(st.columnGap || st.gap) || 2;
+
+  return { cell, gap };
+}
+
 function cellToPx(x, y) {
-  const cell = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cell'));
-  const gap  = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--gap'));
+  const { cell, gap } = getBoardMetrics();
   const left = x * (cell + gap);
   const top  = y * (cell + gap);
   return { left, top, cell, gap };
+}
+
+function updateBoardScale() {
+  const wrap = document.querySelector('#combat .board-wrap');
+  const board = document.getElementById('board');
+  if (!wrap || !board) return;
+
+  const rootStyle = getComputedStyle(document.documentElement);
+  const w = parseFloat(rootStyle.getPropertyValue('--w')) || 1;
+  const h = parseFloat(rootStyle.getPropertyValue('--h')) || 1;
+
+  const { cell, gap } = getBoardMetrics();
+
+  const boardW = w * cell + (w - 1) * gap;
+  const boardH = h * cell + (h - 1) * gap;
+
+  const parent = wrap.parentElement;
+  const availW = parent ? parent.clientWidth : window.innerWidth;
+  const availH = Math.max(240, window.innerHeight * 0.78);
+
+  const scale = Math.min(availW / boardW, availH / boardH, 1);
+  document.documentElement.style.setProperty('--boardScale', scale.toFixed(3));
 }
 
 const SPEED = 1.35; // >1 = plus lent (ex: 1.2, 1.5, 2.0)
@@ -63,7 +98,14 @@ function renderBoard(w, h) {
       board.appendChild(cell);
     }
   }
+
+  requestAnimationFrame(() => updateBoardScale());
 }
+
+window.addEventListener('resize', () => {
+  requestAnimationFrame(() => updateBoardScale());
+});
+
 
 // ---- Units state ----
 // keyed by uid ("A:53", "B:53", ...)
@@ -369,8 +411,8 @@ async function step() {
         scale: 3,
         durationMs: 420 * SPEED,
         anchor: 'center',
-        offsetX: -10,
-        offsetY: -85
+        offsetX: -5,
+        offsetY: 10
       });
     }
 
@@ -440,8 +482,8 @@ async function step() {
         scale: 3,
         durationMs: 520 * SPEED,
         anchor: 'center',
-        offsetX: -15,
-        offsetY: -85
+        offsetX: -5,
+        offsetY: 10
       });
     }
 
@@ -651,7 +693,7 @@ function playWizardImpactAtCell(x, y, {
 
   const { left, top, cell } = cellToPx(x, y);
 
-  const OFFSET_Y = -95;
+  const OFFSET_Y = -10;
   const OFFSET_X = -5;
 
   const cx = (left + cell / 2) + OFFSET_X;

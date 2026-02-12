@@ -160,10 +160,11 @@
         gap: 3rem;
         justify-content: center;
         align-items: flex-start;
-        padding: 0 1rem;
+        padding: 0 50px;
 
         .first-team,
         .second-team {
+            box-sizing: border-box;
             width: min(420px, 95vw);
             padding: 16px;
             border-radius: 16px;

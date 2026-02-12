@@ -42,7 +42,7 @@ class TeamVsTeamCombatService
         while (!$this->isDefeated($fightersA) && !$this->isDefeated($fightersB)) {
             $roundData = [
                 'round' => $round,
-                'damage_multiplier' => 1 + (int)(($round - 1) / 5) * 0.3,
+                'damage_multiplier' => 1 + (int)(($round - 1) / 5) * 2,
                 'actions' => [],
             ];
 
@@ -222,6 +222,7 @@ class TeamVsTeamCombatService
     private function moveTowards(array &$attacker, array $targetPos, array &$occupied = []): bool
     {
         $steps = (int)$attacker['move'];
+        $prevPos = $attacker['prev_position'] ?? null;
 
         while ($steps > 0) {
             $cur = $attacker['position'];
@@ -233,30 +234,40 @@ class TeamVsTeamCombatService
                 ['x' => $cur['x'], 'y' => $cur['y'] - 1],
             ];
 
-            usort($candidates, function ($a, $b) use ($targetPos) {
-                return $this->distance($a, $targetPos) <=> $this->distance($b, $targetPos);
-            });
-
-            $moved = false;
-
+            $valid = [];
             foreach ($candidates as $next) {
                 if (!$this->inBounds($next)) continue;
+                if (isset($occupied[$this->posKey($next)])) continue;
+                $valid[] = $next;
+            }
 
-                $key = $this->posKey($next);
-                if (isset($occupied[$key])) continue;
+            if (!$valid) return false;
 
-                unset($occupied[$this->posKey($cur)]);
-                $occupied[$key] = true;
+            usort($valid, fn($a, $b) => $this->distance($a, $targetPos) <=> $this->distance($b, $targetPos));
 
-                $attacker['position'] = $next;
-                $moved = true;
+            $picked = null;
+            foreach ($valid as $next) {
+                if ($prevPos !== null && $next['x'] === $prevPos['x'] && $next['y'] === $prevPos['y']) {
+                    continue;
+                }
+                $picked = $next;
                 break;
             }
 
-            if (!$moved) return false;
+            if ($picked === null) {
+                $picked = $valid[0];
+            }
+
+            unset($occupied[$this->posKey($cur)]);
+            $occupied[$this->posKey($picked)] = true;
+
+            $prevPos = $cur;
+            $attacker['position'] = $picked;
 
             $steps--;
         }
+
+        $attacker['prev_position'] = $prevPos;
 
         return true;
     }

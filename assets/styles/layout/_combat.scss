@@ -2,12 +2,13 @@
     --w: 6;
     --h: 4;
 
-    --cell: 110px;
-    --gap: 2px;
+    --cell: clamp(52px, 10vw, 110px);
+    --gap: clamp(1px, 0.35vw, 2px);
 
     --tilt: 60deg;
     --yaw: 0deg;
-    --thickness: 0px;
+
+    --boardScale: 1;
 }
 
 #combat {
@@ -19,6 +20,7 @@
     background-size: cover;
 
         .scene {
+            position: relative;
             min-height: 75vh;
 
             display:flex;
@@ -33,33 +35,38 @@
             background-position: center;
             background-size: contain;
 
-            .hud {
-                display:flex;
-                position: relative;
-                top: -500px;
-                gap: 10px;
-                align-items:center;
-                color:#eee;
-                font: 600 14px/1 system-ui, sans-serif;
-
-                button {
-                    cursor:pointer;
-                    border:0;
-                    padding:10px 14px;
-                    border-radius: 10px;
-                    background:#ffffff;
-                }
-            }
-
             .board-wrap {
                 position: relative;
-                top: 100px;
+                margin-inline: auto;
 
                 width: calc(var(--w) * var(--cell) + (var(--w) - 1) * var(--gap));
                 height: calc(var(--h) * var(--cell) + (var(--h) - 1) * var(--gap));
 
-                perspective: 1100px;
-                perspective-origin: 50% 35%;
+                transform: scale(var(--boardScale));
+                transform-origin: top center;
+
+                max-width: 100%;
+
+                .hud {
+                    display:flex;
+                    position: absolute;
+                    top: 16px;
+                    left: 50%;
+                    transform: translateX(-50%);
+
+                    gap: 10px;
+                    align-items:center;
+                    color:#eee;
+                    font: 600 14px/1 system-ui, sans-serif;
+
+                    button {
+                        cursor:pointer;
+                        border:0;
+                        padding:10px 14px;
+                        border-radius: 10px;
+                        background:#ffffff;
+                    }
+                }
 
                 .board {
                     position: absolute;
@@ -92,6 +99,7 @@
                     position: absolute;
                     inset: 0;
                     pointer-events: none;
+                    padding-top: 6rem;
 
                     transform-style: preserve-3d;
                     transform-origin: 50% 80%;
